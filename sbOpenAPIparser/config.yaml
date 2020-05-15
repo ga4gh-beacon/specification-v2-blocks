@@ -1,9 +1,10 @@
-version: 2020-05-13
+version: 2020-05-14
 project: "beacon-v2"
-paths:
-  out: "../schemas"
-  schemafile: "../../specification-v2/beacon.yaml"
-  headerfile: "../source/header.yaml"
+# if predefined paths -> relative to script!
+outdir: "../schemas"
+schemafile: "../../specification-v2/beacon.yaml"
+headerfile: "../source/header.yaml"
+# `__schema__` is inserted for each during parsing; other values can be defined
 header:
   "$schema": http://json-schema.org/draft-07/schema#
   "$id": https://beacon-project.io/schemas/__project__/__schema__/__version__
