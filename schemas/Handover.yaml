@@ -1,4 +1,4 @@
-$id: https://beacon-project.io/schemas/beacon-v2/Handover/2.0
+$id: https://beacon-project.io/schemas/beacon-v2/Handover/2.0.0-draft.1
 $schema: http://json-schema.org/draft-07/schema#
 meta:
   contributors:
@@ -39,4 +39,4 @@ required:
 - url
 title: Handover
 type: object
-version: '2.0'
+version: 2.0.0-draft.1

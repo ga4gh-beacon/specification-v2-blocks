@@ -1,4 +1,4 @@
-$id: https://beacon-project.io/schemas/beacon-v2/BiosampleResponse/2.0
+$id: https://beacon-project.io/schemas/beacon-v2/BiosampleResponse/2.0.0-draft.1
 $schema: http://json-schema.org/draft-07/schema#
 description: 'Response of a query over biosamples.
 
@@ -22,12 +22,12 @@ meta:
     id: https://github.com/ga4gh-beacon/specification-v2
 properties:
   meta:
-    $ref: ./GenomicVariantResponseMeta
-  value:
-    $ref: ./BiosampleResponseValue
+    $ref: ./ResponseMeta
+  response:
+    $ref: ./BiosampleResponseContent
 required:
 - meta
-- value
+- response
 title: BiosampleResponse
 type: object
-version: '2.0'
+version: 2.0.0-draft.1

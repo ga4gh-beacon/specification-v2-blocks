@@ -40,7 +40,7 @@
     </td>
   </tr>
   <tr>
-    <th>Source (2.0)</th>
+    <th>Source (2.0.0-draft.1)</th>
     <td>
       <ul>
         <li><a href="current/IndividualResponse.json" target="_BLANK">raw source [JSON]</a></li>
@@ -67,11 +67,11 @@ __Description:__ Response of a query over individuals.
   </tr>
   <tr>
     <th>meta</th>
-    <td>./GenomicVariantResponseMeta</td>
+    <td>./ResponseMeta</td>
   </tr>
   <tr>
-    <th>value</th>
-    <td>./IndividualResponseValue</td>
+    <th>response</th>
+    <td>./IndividualResponseContent</td>
   </tr>
 
 </table>
@@ -79,14 +79,14 @@ __Description:__ Response of a query over individuals.
 
 #### meta
 
-* type: ./GenomicVariantResponseMeta
+* type: ./ResponseMeta
 
 
 
 
-#### value
+#### response
 
-* type: ./IndividualResponseValue
+* type: ./IndividualResponseContent
 
 
 

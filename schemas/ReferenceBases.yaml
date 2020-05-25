@@ -1,7 +1,12 @@
-$id: https://beacon-project.io/schemas/beacon-v2/ReferenceBases/2.0
+$id: https://beacon-project.io/schemas/beacon-v2/ReferenceBases/2.0.0-draft.1
 $schema: http://json-schema.org/draft-07/schema#
-description: "Reference bases for this variant (starting from `start`). Accepted \n\
-  values: [ACGT]*.\n"
+description: "Reference bases for this variant (starting from `start`). \nAccepted\
+  \ values: [ACGTN]*. N is a wildcard, that denotes the \nposition of any base, and\
+  \ can be used as a standalone base of any \ntype or within a partially known sequence.\
+  \ For example a sequence \nwhere the first and last bases are known, but the middle\
+  \ portion can \nexhibit countless variations of [ACGT], or the bases are unknown:\
+  \ \nANNT the Ns can take take any form of [ACGT], which makes both ACCT \nand ATGT\
+  \ (or any other combination) viable sequences.\n"
 meta:
   contributors:
   - description: ELIXIR Beacon team
@@ -19,7 +24,7 @@ meta:
   used_by:
   - description: Beacon, for Beacon v2 testing
     id: https://github.com/ga4gh-beacon/specification-v2
-pattern: ^([ACGT]+)$
+pattern: ^([ACGTN]+)$
 title: ReferenceBases
 type: string
-version: '2.0'
+version: 2.0.0-draft.1

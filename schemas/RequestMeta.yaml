@@ -1,4 +1,4 @@
-$id: https://beacon-project.io/schemas/beacon-v2/RequestMeta/2.0
+$id: https://beacon-project.io/schemas/beacon-v2/RequestMeta/2.0.0-draft.1
 $schema: http://json-schema.org/draft-07/schema#
 description: 'Requested schemas and versions to be used in the response.
 
@@ -32,4 +32,4 @@ properties:
     $ref: ./RequestedSchemas
 title: RequestMeta
 type: object
-version: '2.0'
+version: 2.0.0-draft.1

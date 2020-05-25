@@ -1,4 +1,4 @@
-$id: https://beacon-project.io/schemas/beacon-v2/RequestDatasets/2.0
+$id: https://beacon-project.io/schemas/beacon-v2/RequestDatasets/2.0.0-draft.1
 $schema: http://json-schema.org/draft-07/schema#
 description: Identifiers of datasets, as defined in `BeaconDataset`. If this field
   is null/not specified, all datasets should be queried.
@@ -39,4 +39,4 @@ properties:
     type: string
 title: RequestDatasets
 type: object
-version: '2.0'
+version: 2.0.0-draft.1

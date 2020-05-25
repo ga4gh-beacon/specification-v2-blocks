@@ -1,4 +1,4 @@
-$id: https://beacon-project.io/schemas/beacon-v2/BeaconDatasetAlleleResponse/2.0
+$id: https://beacon-project.io/schemas/beacon-v2/BeaconDatasetAlleleResponse/2.0.0-draft.1
 $schema: http://json-schema.org/draft-07/schema#
 description: 'Response containing information about an allele in a particular dataset.
 
@@ -35,8 +35,6 @@ properties:
 
       '
     type: string
-  error:
-    $ref: ./BeaconError
   exists:
     description: Indicator of whether the given allele was observed in the dataset.
       This should be non-null, unless there was an error, in which case `error` has
@@ -83,4 +81,4 @@ required:
 - datasetId
 title: BeaconDatasetAlleleResponse
 type: object
-version: '2.0'
+version: 2.0.0-draft.1

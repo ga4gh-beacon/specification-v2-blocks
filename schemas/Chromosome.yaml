@@ -1,4 +1,4 @@
-$id: https://beacon-project.io/schemas/beacon-v2/Chromosome/2.0
+$id: https://beacon-project.io/schemas/beacon-v2/Chromosome/2.0.0-draft.1
 $schema: http://json-schema.org/draft-07/schema#
 description: 'Reference name (chromosome). Accepting values 1-22, X, Y, MT.
 
@@ -48,4 +48,4 @@ meta:
     id: https://github.com/ga4gh-beacon/specification-v2
 title: Chromosome
 type: string
-version: '2.0'
+version: 2.0.0-draft.1

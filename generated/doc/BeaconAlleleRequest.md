@@ -40,7 +40,7 @@
     </td>
   </tr>
   <tr>
-    <th>Source (2.0)</th>
+    <th>Source (2.0.0-draft.1)</th>
     <td>
       <ul>
         <li><a href="current/BeaconAlleleRequest.json" target="_BLANK">raw source [JSON]</a></li>
@@ -68,7 +68,7 @@ against a sequence in a genome, and a range can be optionally specified.
   </tr>
   <tr>
     <th>alternateBases</th>
-    <td>string</td>
+    <td>./AlternateBases</td>
   </tr>
   <tr>
     <th>assemblyId</th>
@@ -100,7 +100,7 @@ against a sequence in a genome, and a range can be optionally specified.
   </tr>
   <tr>
     <th>referenceBases</th>
-    <td>string</td>
+    <td>./ReferenceBases</td>
   </tr>
   <tr>
     <th>referenceName</th>
@@ -128,21 +128,8 @@ against a sequence in a genome, and a range can be optionally specified.
 
 #### alternateBases
 
-* type: string
+* type: ./AlternateBases
 
-The bases that appear instead of the reference bases. Accepted 
-values: [ACGTN]*. N is a wildcard, that denotes the position of any 
-base, and can be used as a standalone base of any type or within a 
-partially known sequence. For example a sequence where the first and 
-last bases are known, but the middle portion can exhibit countless 
-variations of [ACGT], or the bases are unknown: ANNT the Ns can take 
-any form of [ACGT], which makes both ACCT and ATGT (or any other 
-combination) viable sequences.
-
-Symbolic ALT alleles (DEL, INS, DUP, INV, CNV, DUP:TANDEM, DEL:ME,
-INS:ME) will be represented in `variantType`.
-
-Optional: either `alternateBases` or `variantType` is required.
 
 
 
@@ -200,16 +187,8 @@ Indicator of whether responses for individual datasets (datasetAlleleResponses) 
 
 #### referenceBases
 
-* type: string
+* type: ./ReferenceBases
 
-Reference bases for this variant (starting from `start`). Accepted 
-values: [ACGTN]*. N is a wildcard, that denotes the position of any 
-base, and can be used as a standalone base of any type or within a 
-partially known sequence. For example a sequence where the first and 
-last bases are known, but the middle portion can exhibit countless 
-variations of [ACGT], or the bases are unknown: ANNT the Ns can take 
-any form of [ACGT], which makes both ACCT and ATGT (or any 
-other combination) viable sequences.
 
 
 

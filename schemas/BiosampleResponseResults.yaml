@@ -1,4 +1,4 @@
-$id: https://beacon-project.io/schemas/beacon-v2/BiosampleResponseResults/2.0
+$id: https://beacon-project.io/schemas/beacon-v2/BiosampleResponseResults/2.0.0-draft.1
 $schema: http://json-schema.org/draft-07/schema#
 description: 'Default schema for describing biosamples.
 
@@ -33,4 +33,4 @@ properties:
 required:
 - defaultSchema
 title: BiosampleResponseResults
-version: '2.0'
+version: 2.0.0-draft.1

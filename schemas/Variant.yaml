@@ -1,4 +1,4 @@
-$id: https://beacon-project.io/schemas/beacon-v2/Variant/2.0
+$id: https://beacon-project.io/schemas/beacon-v2/Variant/2.0.0-draft.1
 $schema: http://json-schema.org/draft-07/schema#
 description: 'Default schema for variant
 
@@ -31,4 +31,4 @@ required:
 - defaultSchema
 - alternativeSchemas
 title: Variant
-version: '2.0'
+version: 2.0.0-draft.1

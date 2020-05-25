@@ -1,4 +1,4 @@
-$id: https://beacon-project.io/schemas/beacon-v2/BeaconError/2.0
+$id: https://beacon-project.io/schemas/beacon-v2/BeaconError/2.0.0-draft.1
 $schema: http://json-schema.org/draft-07/schema#
 description: Beacon-specific error. This should be non-null in exceptional situations
   only, in which case `exists` has to be null.
@@ -30,4 +30,4 @@ required:
 - errorCode
 title: BeaconError
 type: object
-version: '2.0'
+version: 2.0.0-draft.1

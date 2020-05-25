@@ -40,7 +40,7 @@
     </td>
   </tr>
   <tr>
-    <th>Source (2.0)</th>
+    <th>Source (2.0.0-draft.1)</th>
     <td>
       <ul>
         <li><a href="current/Filters.json" target="_BLANK">raw source [JSON]</a></li>

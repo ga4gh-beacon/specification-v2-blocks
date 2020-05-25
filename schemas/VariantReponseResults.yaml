@@ -1,4 +1,4 @@
-$id: https://beacon-project.io/schemas/beacon-v2/VariantReponseResults/2.0
+$id: https://beacon-project.io/schemas/beacon-v2/VariantReponseResults/2.0.0-draft.1
 $schema: http://json-schema.org/draft-07/schema#
 description: 'Description pending
 
@@ -34,4 +34,4 @@ properties:
       $ref: ./Handover
     type: array
 title: VariantReponseResults
-version: '2.0'
+version: 2.0.0-draft.1

@@ -1,4 +1,4 @@
-$id: https://beacon-project.io/schemas/beacon-v2/Assembly/2.0
+$id: https://beacon-project.io/schemas/beacon-v2/Assembly/2.0.0-draft.1
 $schema: http://json-schema.org/draft-07/schema#
 description: 'Assembly identifier (GRC notation, e.g. GRCh37).
 
@@ -23,4 +23,4 @@ meta:
     id: https://github.com/ga4gh-beacon/specification-v2
 title: Assembly
 type: string
-version: '2.0'
+version: 2.0.0-draft.1

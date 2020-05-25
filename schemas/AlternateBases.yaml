@@ -1,7 +1,14 @@
-$id: https://beacon-project.io/schemas/beacon-v2/AlternateBases/2.0
+$id: https://beacon-project.io/schemas/beacon-v2/AlternateBases/2.0.0-draft.1
 $schema: http://json-schema.org/draft-07/schema#
-description: "The bases that appear instead of the reference bases. Accepted values:\
-  \ \n[ACGT]*.\n"
+description: "The bases that appear instead of the reference bases. Accepted \nvalues:\
+  \ [ACGTN]*. N is a wildcard, that denotes the position of any \nbase, and can be\
+  \ used as a standalone base of any type or within a \npartially known sequence.\
+  \ For example a sequence where the first and \nlast bases are known, but the middle\
+  \ portion can exhibit countless \nvariations of [ACGT], or the bases are unknown:\
+  \ ANNT the Ns can take \ntake any form of [ACGT], which makes both ACCT and ATGT\
+  \ (or any \nother combination) viable sequences.\nSymbolic ALT alleles (DEL, INS,\
+  \ DUP, INV, CNV, DUP:TANDEM, DEL:ME,\nINS:ME) will be represented in `variantType`.\n\
+  Optional: either `alternateBases` or `variantType` is required.\n"
 meta:
   contributors:
   - description: ELIXIR Beacon team
@@ -19,7 +26,7 @@ meta:
   used_by:
   - description: Beacon, for Beacon v2 testing
     id: https://github.com/ga4gh-beacon/specification-v2
-pattern: ^([ACGT]+)$
+pattern: ^([ACGTN]+)$
 title: AlternateBases
 type: string
-version: '2.0'
+version: 2.0.0-draft.1

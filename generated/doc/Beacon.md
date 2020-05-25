@@ -40,7 +40,7 @@
     </td>
   </tr>
   <tr>
-    <th>Source (2.0)</th>
+    <th>Source (2.0.0-draft.1)</th>
     <td>
       <ul>
         <li><a href="current/Beacon.json" target="_BLANK">raw source [JSON]</a></li>
@@ -83,6 +83,10 @@ __Description:__ Metadata describing a beacon instance.
   </tr>
   <tr>
     <th>description</th>
+    <td>string</td>
+  </tr>
+  <tr>
+    <th>environment</th>
     <td>string</td>
   </tr>
   <tr>
@@ -155,6 +159,15 @@ Dataset(s) served by the beacon.
 * type: string
 
 Description of the beacon.
+
+
+
+#### environment
+
+* type: string
+
+Environment the service is running in. Use this to distinguish 
+between production, development and testing/staging deployments.
 
 
 

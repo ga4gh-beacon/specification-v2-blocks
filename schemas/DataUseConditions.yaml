@@ -1,4 +1,4 @@
-$id: https://beacon-project.io/schemas/beacon-v2/DataUseConditions/2.0
+$id: https://beacon-project.io/schemas/beacon-v2/DataUseConditions/2.0.0-draft.1
 $schema: http://json-schema.org/draft-07/schema#
 description: 'Data use conditions ruling this dataset.
 
@@ -30,4 +30,4 @@ required:
 - adamDataUse
 title: DataUseConditions
 type: object
-version: '2.0'
+version: 2.0.0-draft.1

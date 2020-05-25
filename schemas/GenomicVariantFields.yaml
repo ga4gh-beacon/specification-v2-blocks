@@ -1,4 +1,4 @@
-$id: https://beacon-project.io/schemas/beacon-v2/GenomicVariantFields/2.0
+$id: https://beacon-project.io/schemas/beacon-v2/GenomicVariantFields/2.0.0-draft.1
 $schema: http://json-schema.org/draft-07/schema#
 description: "All the required fields to query any kind of variant (e.g. SNP, DUP,\
   \ \netc.).\n"
@@ -21,18 +21,7 @@ meta:
     id: https://github.com/ga4gh-beacon/specification-v2
 properties:
   alternateBases:
-    description: "The bases that appear instead of the reference bases. Accepted \n\
-      values: [ACGTN]*. N is a wildcard, that denotes the position of any \nbase,\
-      \ and can be used as a standalone base of any type or within a \npartially known\
-      \ sequence. For example a sequence where the first and \nlast bases are known,\
-      \ but the middle portion can exhibit countless \nvariations of [ACGT], or the\
-      \ bases are unknown: ANNT the Ns can take \ntake any form of [ACGT], which makes\
-      \ both ACCT and ATGT (or any \nother combination) viable sequences.\nSymbolic\
-      \ ALT alleles (DEL, INS, DUP, INV, CNV, DUP:TANDEM, DEL:ME,\nINS:ME) will be\
-      \ represented in `variantType`.\nOptional: either `alternateBases` or `variantType`\
-      \ is required.\n"
-    pattern: ^([ACGTN]+)$
-    type: string
+    $ref: ./AlternateBases
   assemblyId:
     $ref: ./Assembly
   end:
@@ -42,18 +31,15 @@ properties:
       format: int64
       type: integer
     type: array
+  id:
+    description: 'Id of the variant to display.
+
+      '
+    type: string
   mateName:
     $ref: ./Chromosome
   referenceBases:
-    description: "Reference bases for this variant (starting from `start`). \nAccepted\
-      \ values: [ACGTN]*. N is a wildcard, that denotes the \nposition of any base,\
-      \ and can be used as a standalone base of any \ntype or within a partially known\
-      \ sequence. For example a sequence \nwhere the first and last bases are known,\
-      \ but the middle portion can \nexhibit countless variations of [ACGT], or the\
-      \ bases are unknown: \nANNT the Ns can take take any form of [ACGT], which makes\
-      \ both ACCT \nand ATGT (or any other combination) viable sequences.\n"
-    pattern: ^([ACGTN]+)$
-    type: string
+    $ref: ./ReferenceBases
   referenceName:
     $ref: ./Chromosome
   start:
@@ -82,10 +68,6 @@ properties:
       \ => `startMax` interval, or fusion\n      of the sequence to distant partner\n\
       Optional: either `alternateBases` or `variantType` is required.\n"
     type: string
-required:
-- assemblyId
-- referenceName
-- start
 title: GenomicVariantFields
 type: object
-version: '2.0'
+version: 2.0.0-draft.1

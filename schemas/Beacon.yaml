@@ -1,4 +1,4 @@
-$id: https://beacon-project.io/schemas/beacon-v2/Beacon/2.0
+$id: https://beacon-project.io/schemas/beacon-v2/Beacon/2.0.0-draft.1
 $schema: http://json-schema.org/draft-07/schema#
 description: 'Metadata describing a beacon instance.
 
@@ -46,6 +46,16 @@ properties:
     description: 'Description of the beacon.
 
       '
+    type: string
+  environment:
+    description: "Environment the service is running in. Use this to distinguish \n\
+      between production, development and testing/staging deployments.\n"
+    enum:
+    - prod
+    - test
+    - dev
+    - staging
+    example: dev
     type: string
   id:
     description: 'Unique identifier of the beacon. Use reverse domain name notation.
@@ -98,8 +108,9 @@ required:
 - id
 - name
 - apiVersion
+- environment
 - organization
 - datasets
 title: Beacon
 type: object
-version: '2.0'
+version: 2.0.0-draft.1

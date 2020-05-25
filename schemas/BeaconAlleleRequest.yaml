@@ -1,4 +1,4 @@
-$id: https://beacon-project.io/schemas/beacon-v2/BeaconAlleleRequest/2.0
+$id: https://beacon-project.io/schemas/beacon-v2/BeaconAlleleRequest/2.0.0-draft.1
 $schema: http://json-schema.org/draft-07/schema#
 description: "Allele request made against the beacon. The allele must be mapped \n\
   against a sequence in a genome, and a range can be optionally specified.\n"
@@ -21,18 +21,7 @@ meta:
     id: https://github.com/ga4gh-beacon/specification-v2
 properties:
   alternateBases:
-    description: "The bases that appear instead of the reference bases. Accepted \n\
-      values: [ACGTN]*. N is a wildcard, that denotes the position of any \nbase,\
-      \ and can be used as a standalone base of any type or within a \npartially known\
-      \ sequence. For example a sequence where the first and \nlast bases are known,\
-      \ but the middle portion can exhibit countless \nvariations of [ACGT], or the\
-      \ bases are unknown: ANNT the Ns can take \nany form of [ACGT], which makes\
-      \ both ACCT and ATGT (or any other \ncombination) viable sequences.\n\nSymbolic\
-      \ ALT alleles (DEL, INS, DUP, INV, CNV, DUP:TANDEM, DEL:ME,\nINS:ME) will be\
-      \ represented in `variantType`.\n\nOptional: either `alternateBases` or `variantType`\
-      \ is required.\n"
-    pattern: ^([ACGTN]+)$
-    type: string
+    $ref: ./AlternateBases
   assemblyId:
     description: 'Assembly identifier (GRC notation, e.g. `GRCh37`).
 
@@ -71,15 +60,7 @@ properties:
   mateName:
     $ref: ./Chromosome
   referenceBases:
-    description: "Reference bases for this variant (starting from `start`). Accepted\
-      \ \nvalues: [ACGTN]*. N is a wildcard, that denotes the position of any \nbase,\
-      \ and can be used as a standalone base of any type or within a \npartially known\
-      \ sequence. For example a sequence where the first and \nlast bases are known,\
-      \ but the middle portion can exhibit countless \nvariations of [ACGT], or the\
-      \ bases are unknown: ANNT the Ns can take \nany form of [ACGT], which makes\
-      \ both ACCT and ATGT (or any \nother combination) viable sequences.\n"
-    pattern: ^([ACGTN]+)$
-    type: string
+    $ref: ./ReferenceBases
   referenceName:
     $ref: ./Chromosome
   start:
@@ -118,4 +99,4 @@ required:
 - assemblyId
 title: BeaconAlleleRequest
 type: object
-version: '2.0'
+version: 2.0.0-draft.1
