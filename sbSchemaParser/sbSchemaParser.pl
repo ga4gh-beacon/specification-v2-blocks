@@ -675,12 +675,13 @@ the attributes). We'll hope for a more elegant solution ...
     	$typeLab	.=	' ('.$prop_data->{"format"}.')' }
   }
 
-  if ($typeLab =~ /\/[\w\-]+?\.\w+?$/) {
+  if ($typeLab =~ /\/[\w\-]+?(\.\w+?)?$/) {
     my $yaml    =   $typeLab;
-    my $html    =   $typeLab;
-    $html       =~  s/\.\w+?$/.html/;
+    $yaml       =~  s/\.\w+?$//;
+    my $html    =   $yaml;
+    $html       .=  '.html';
     $html       =~  s/v\d+?\.\d+?\.\d+?\///;
-    $typeLab    .=  ' [<a href="'.$yaml.'" target="_BLANK">SRC</a>] [<a href="'.$html.'" target="_BLANK">HTML</a>]' }
+    $typeLab    .=  ' [<a href="'.$html.'" target="_BLANK">HTML</a>]' }
 
   if ($type =~ /array/) {
     $typeLab    =   'array of "'.$typeLab.'"' }

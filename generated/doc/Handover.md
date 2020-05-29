@@ -65,7 +65,7 @@ __Type:__ object
   </tr>
   <tr>
     <th>handoverType</th>
-    <td>./HandoverType</td>
+    <td>./HandoverType [<a href="./HandoverType.html" target="_BLANK">HTML</a>]</td>
   </tr>
   <tr>
     <th>note</th>
@@ -81,7 +81,7 @@ __Type:__ object
 
 #### handoverType
 
-* type: ./HandoverType
+* type: ./HandoverType [<a href="./HandoverType.html" target="_BLANK">HTML</a>]
 
 
 

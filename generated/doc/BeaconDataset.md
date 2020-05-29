@@ -79,7 +79,7 @@ __Description:__ A dataset available in the beacon.
   </tr>
   <tr>
     <th>dataUseConditions</th>
-    <td>./DataUseConditions</td>
+    <td>./DataUseConditions [<a href="./DataUseConditions.html" target="_BLANK">HTML</a>]</td>
   </tr>
   <tr>
     <th>description</th>
@@ -147,7 +147,7 @@ The time the dataset was created (ISO 8601 format).
 
 #### dataUseConditions
 
-* type: ./DataUseConditions
+* type: ./DataUseConditions [<a href="./DataUseConditions.html" target="_BLANK">HTML</a>]
 
 
 

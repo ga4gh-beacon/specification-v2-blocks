@@ -71,7 +71,7 @@ __Description:__ Response containing information about an allele in a particular
   </tr>
   <tr>
     <th>datasetHandover</th>
-    <td>array of "./Handover"</td>
+    <td>array of "./Handover [<a href="./Handover.html" target="_BLANK">HTML</a>]"</td>
   </tr>
   <tr>
     <th>datasetId</th>
@@ -120,7 +120,7 @@ included.
 
 #### datasetHandover
 
-* type: array of "./Handover"
+* type: array of "./Handover [<a href="./Handover.html" target="_BLANK">HTML</a>]"
 
 
 
