@@ -3,6 +3,8 @@
 
 This repository contains schemas from the Beacon v2 development project. Schemas here are represented as separate files, in concordance with schema representations used by the [GA4GH Schemablocks {S}[B]](https://schemablocks.org/categories/schemas.html) initiative.
 
+The rendered documentation pages are available trough the **[Beacon project website](https://beacon-project.io/tags/v2.html)**.
+
 The representations here should be considered **ephemeral and non-autoritive!**
 
 ----
