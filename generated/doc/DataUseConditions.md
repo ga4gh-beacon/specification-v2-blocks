@@ -1,19 +1,20 @@
 
 <div id="schema-header-title">
-  <h2>DataUseConditions <span id="schema-header-title-project">[beacon-v2] <a href="https://github.com/ga4gh-beacon/specification-v2-test-schemas" target="_BLANK">&nearr;</a></span> </h2>
+  <h2>DataUseConditions <span id="schema-header-title-project">beacon-v2 <a href="https://github.com/ga4gh-beacon/specification-v2-blocks" target="_BLANK">&nearr;</a></span> </h2>
 </div>
 
 <table id="schema-header-table">
   <tr>
-    <th>{S}[B] Status Level <a href="https://schemablocks.org/about/sb-status-levels.html">[i]</a></th>
-    <td><div id="schema-header-status">playground</div></td>
+    <th>{S}[B] Status <a href="https://schemablocks.org/about/sb-status-levels.html">[i]</a></th>
+    <td><div id="schema-header-status">community</div></td>
   </tr>
 
   <tr>
     <th>Provenance</th>
     <td>
       <ul>
-<li><a href="https://github.com/ga4gh-beacon/specification-v2">Beacon v2 draft schema</a></li>
+<li><a href="https://github.com/ga4gh-beacon/specification-v2"></a></li>
+<li><a href="https://github.com/progenetix/bycon/"></a></li>
       </ul>
     </td>
   </tr>
@@ -21,7 +22,7 @@
     <th>Used by</th>
     <td>
       <ul>
-<li><a href="https://github.com/ga4gh-beacon/specification-v2">Beacon, for Beacon v2 testing</a></li>
+<li><a href="https://github.com/progenetix/schemas/"></a></li>
       </ul>
     </td>
   </tr>
@@ -32,19 +33,20 @@
     <th>Contributors</th>
     <td>
       <ul>
-<li><a href="https://beacon-project.io/categories/people.html">ELIXIR Beacon team</a></li>
-<li><a href="https://beacon-project.io/people/Sabela-de-la-Torre/">Sabela de la Torre Pernas</a></li>
-<li><a href="https://beacon-project.io/people/Jordi-Rambla/">Jordi Rambla De Argila</a></li>
-<li><a href="https://orcid.org/0000-0002-9903-4248">Michael Baudis</a></li>
+<li><a href="https://beacon-project.io/categories/people.html"></a></li>
+<li><a href="https://github.com/jrambla"></a></li>
+<li><a href="https://github.com/sdelatorrep"></a></li>
+<li><a href="https://github.com/mamanambiya"></a></li>
+<li><a href="https://orcid.org/0000-0002-9903-4248"></a></li>
       </ul>
     </td>
   </tr>
   <tr>
-    <th>Source (2.0.0-draft.1)</th>
+    <th>Source (2.0.0-draft.3)</th>
     <td>
       <ul>
         <li><a href="current/DataUseConditions.json" target="_BLANK">raw source [JSON]</a></li>
-        <li><a href="https://github.com/ga4gh-beacon/specification-v2-test-schemas/blob/master/schemas/DataUseConditions.yaml" target="_BLANK">Github</a></li>
+        <li><a href="https://github.com/ga4gh-beacon/specification-v2-blocks/blob/master/schemas/DataUseConditions.yaml" target="_BLANK">Github</a></li>
       </ul>
     </td>
   </tr>
@@ -67,11 +69,11 @@ __Description:__ Data use conditions ruling this dataset.
   </tr>
   <tr>
     <th>adamDataUse</th>
-    <td>https://raw.githubusercontent.com/ga4gh/ADA-M/v1.0.1/adam.yaml./Adam [<a href="https://raw.githubusercontent.com/ga4gh/ADA-M/adam.yaml./Adam.html" target="_BLANK">HTML</a>]</td>
+    <td>https://raw.githubusercontent.com/ga4gh/ADA-M/v1.0.1/adam.yamlAdam [<a href="https://raw.githubusercontent.com/ga4gh/ADA-M/v1.0.1/adam.yamlAdam">LINK</a>]</td>
   </tr>
   <tr>
     <th>consentCodeDataUse</th>
-    <td>https://raw.githubusercontent.com/ga4gh/ga4gh-consent-policy/v1.1.0/consent_code.yaml./ConsentCodeDataUse [<a href="https://raw.githubusercontent.com/ga4gh/ga4gh-consent-policy/consent_code.yaml./ConsentCodeDataUse.html" target="_BLANK">HTML</a>]</td>
+    <td>https://raw.githubusercontent.com/ga4gh/ga4gh-consent-policy/v1.1.0/consent_code.yamlConsentCodeDataUse [<a href="https://raw.githubusercontent.com/ga4gh/ga4gh-consent-policy/v1.1.0/consent_code.yamlConsentCodeDataUse">LINK</a>]</td>
   </tr>
 
 </table>
@@ -79,14 +81,14 @@ __Description:__ Data use conditions ruling this dataset.
 
 #### adamDataUse
 
-* type: https://raw.githubusercontent.com/ga4gh/ADA-M/v1.0.1/adam.yaml./Adam [<a href="https://raw.githubusercontent.com/ga4gh/ADA-M/adam.yaml./Adam.html" target="_BLANK">HTML</a>]
+* type: https://raw.githubusercontent.com/ga4gh/ADA-M/v1.0.1/adam.yamlAdam [<a href="https://raw.githubusercontent.com/ga4gh/ADA-M/v1.0.1/adam.yamlAdam">LINK</a>]
 
 
 
 
 #### consentCodeDataUse
 
-* type: https://raw.githubusercontent.com/ga4gh/ga4gh-consent-policy/v1.1.0/consent_code.yaml./ConsentCodeDataUse [<a href="https://raw.githubusercontent.com/ga4gh/ga4gh-consent-policy/consent_code.yaml./ConsentCodeDataUse.html" target="_BLANK">HTML</a>]
+* type: https://raw.githubusercontent.com/ga4gh/ga4gh-consent-policy/v1.1.0/consent_code.yamlConsentCodeDataUse [<a href="https://raw.githubusercontent.com/ga4gh/ga4gh-consent-policy/v1.1.0/consent_code.yamlConsentCodeDataUse">LINK</a>]
 
 
 

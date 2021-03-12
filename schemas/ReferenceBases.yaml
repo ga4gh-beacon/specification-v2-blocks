@@ -1,30 +1,36 @@
-$id: https://beacon-project.io/schemas/beacon-v2/ReferenceBases/2.0.0-draft.1
 $schema: http://json-schema.org/draft-07/schema#
-description: "Reference bases for this variant (starting from `start`). \nAccepted\
-  \ values: [ACGTN]*. N is a wildcard, that denotes the \nposition of any base, and\
-  \ can be used as a standalone base of any \ntype or within a partially known sequence.\
-  \ For example a sequence \nwhere the first and last bases are known, but the middle\
-  \ portion can \nexhibit countless variations of [ACGT], or the bases are unknown:\
-  \ \nANNT the Ns can take take any form of [ACGT], which makes both ACCT \nand ATGT\
-  \ (or any other combination) viable sequences.\n"
+$id: https://schemablocks.org/schemas/beacon-v2/ReferenceBases/2.0.0-draft.3
+title: ReferenceBases
 meta:
   contributors:
-  - description: ELIXIR Beacon team
-    id: https://beacon-project.io/categories/people.html
-  - description: Sabela de la Torre Pernas
-    id: https://beacon-project.io/people/Sabela-de-la-Torre/
-  - description: Jordi Rambla De Argila
-    id: https://beacon-project.io/people/Jordi-Rambla/
-  - description: Michael Baudis
-    id: orcid:0000-0002-9903-4248
+    - label: ELIXIR Beacon project team
+      id: https://beacon-project.io/categories/people.html
+    - label: Jordi Rambla
+      id: github:@jrambla
+    - label: Sabele de la Torre
+      id: github:@sdelatorrep
+    - label: Mamana Mbiyavanga
+      id: github:@mamanambiya
+    - label: Michael Baudis
+      id: orcid:0000-0002-9903-4248
   provenance:
-  - description: Beacon v2 draft schema
-    id: https://github.com/ga4gh-beacon/specification-v2
-  sb_status: playground
+    - label: Beacon v2
+      id: https://github.com/ga4gh-beacon/specification-v2
+    - label: Progenetix `bycon` project
+      id: https://github.com/progenetix/bycon/
   used_by:
-  - description: Beacon, for Beacon v2 testing
-    id: https://github.com/ga4gh-beacon/specification-v2
-pattern: ^([ACGTN]+)$
-title: ReferenceBases
+    - label: Progenetix database schema (Beacon+ backend)
+      id: https://github.com/progenetix/schemas/
+  sb_status: community
+version: 2.0.0-draft.3
+description: |
+  Reference bases for this variant (starting from `start`). 
+  Accepted values: [ACGTN]*. N is a wildcard, that denotes the 
+  position of any base, and can be used as a standalone base of any 
+  type or within a partially known sequence. For example a sequence 
+  where the first and last bases are known, but the middle portion can 
+  exhibit countless variations of [ACGT], or the bases are unknown: 
+  ANNT the Ns can take take any form of [ACGT], which makes both ACCT 
+  and ATGT (or any other combination) viable sequences.
 type: string
-version: 2.0.0-draft.1
+pattern: ^([ACGTN]+)$

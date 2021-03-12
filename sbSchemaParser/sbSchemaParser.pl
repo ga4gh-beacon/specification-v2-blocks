@@ -6,136 +6,27 @@ use File::Spec::Functions qw(catdir catfile splitdir);
 use JSON::XS;
 use YAML::XS qw(LoadFile DumpFile);
 use Data::Dumper;
-use POSIX qw/strftime/;
 
-$Data::Dumper::Sortkeys =   1;
-$YAML::XS::QuoteNumericStrings	=		0;
+$Data::Dumper::Sortkeys = 1;
+$YAML::XS::QuoteNumericStrings = 0;
 
 binmode STDOUT, ":utf8";
-my @here_path   =   splitdir(abs_path($0));
+my @here_path = splitdir(abs_path($0));
 pop @here_path;
-my $here_path   =   catdir(@here_path);
-my $config      =   LoadFile(catfile($here_path, 'config.yaml')) or die "¡No config.yaml file in this path!";
+my $here_path = catdir(@here_path);
+my $config = LoadFile(catfile($here_path, 'config.yaml')) or die "¡No config.yaml file in this path!";
 bless $config;
 
-=podmd
-
-The `sbSchemaParser.pl` Perl script parses YAML schema definitions 
-written in [_JSON Schema_](https://json-schema.org) which use the standard GA4GH 
-[SchemaBlocks {S}[B]](http://schemablocks.org) structure, into 
-
-* JSON versions of the schemas (unprocessed), to serve as the reference
-schema versions
-* Markdown documentation, both in plain Markdown and as sources for "Jekyll" 
-based Markdown => HTML generation by Github Pages (or a local installation)
-* example `.json` data files, from the inline `examples`
-
-The output files are generated relative to the script path. This assumes a
-directory structure, in which the different repositories are contained in the
-same root (i.e. organization) directory, and the script itself is inside a
-first order directory in one of the repositories. The specific names of all of 
-the directories can be modified in `config.yaml`:
-
-```
-this-organization
-  |
-  |-- tools
-  |     |
-  |     |-- sbSchemaParser
-  |     |     |
-  |           |-- sbSchemaParser.pl # this file
-  |           |-- config.yaml       # in- and output path definitions
-  |
-  |-- sb-external-schemas-name      # example for (1 or 1+) schema repositories
-  |     |
-  |     |-- source
-  |     |     |
-  |     |     |-- v1.0.1						# versioned representation of the donor code
-  |     |
-  |     |-- schemas
-  |     |     |
-  |     |     |-- Schema.yaml
-  |     |     |-- OtherSchema.yaml
-  |     |     |-- ...
-  |     |
-  |     |-- working
-  |     |     |-- SomethingNew.yaml     
-  |     |     |-- ...
-  |     |     
-  |     |-- generated               # config.yaml -> "out_dirnames"
-  |           |
-  |           |-- doc
-  |           |     |-- Schema.md
-  |           |     |-- OtherSchema.md
-  |           |     |-- ...
-  |           |
-  |           |-- json
-  |           |     |    
-  |           |     |-- current
-  |           |     |     |-- Schema.json
-  |           |     |     |-- ...
-  |           |     |    
-  |           |     |-- v0.0.1
-  |           |     |     |-- Schema.json
-  |           |     |     |-- ...
-  |           |     |    
-  |           |     |-- v... 
-  |           |
-  |           |-- examples
-  |   
-  |-- (webdocs.repo)                # web repository (Jekyll based)
-        |
-        |-- (webdocs.jekylldir)
-        |     |
-        |     |-- Schema.md
-        |     |-- ...
-        |
-        |-- (webdocs.schemadir)
-              |
-              |     |-- Schema.json
-              |     |-- ...
-              |    
-              |-- v0.0.1
-              |     |-- Schema.json
-              |     |-- ...
-              |    
-              |-- v...
-```
-
-#### Usage
-
-The `sbSchemaParser.pl` script has to be run in a _local_ version of the 
-repository structure. In principle, any relative directory locations should be 
-possible if specified in the `config.yaml` defaults file, though a reasonable 
-approach is to use a "organization -> projects" structure as above.
-
-The script is executed with
-
-```
-perl sbSchemaParser.pl
-```
-
-The only current option is to provide a "-filter" argument against the schema 
-file names; e.g. `perl sbSchemaParser.pl -filter Age` will only process schemas 
-with "Age" in their file name.
-
-=cut
-
-$config->{here_path}    =   $here_path;
-$config->{git_root_dir} =   realpath($here_path.'/../..');
-my $podmd       =   catfile($config->{git_root_dir}, $config->{podmd});
+$config->{here_path} = $here_path;
+$config->{git_root_dir} = realpath($here_path.'/../..');
+my $podmd = catfile($config->{git_root_dir}, $config->{podmd});
 
 # command line input
-my %args        =   @ARGV;
-$args{-filter}  ||= q{};
+my %args = @ARGV;
+$args{-filter} ||= undef;
 foreach (keys %args) { $config->{args}->{$_} = $args{$_} }
 
-_process_src($config);
-
-# invoking the self-documentation of this script
-
-if (-f $podmd) {
-  `perl $podmd` }
+$config->_process_src();
   
 exit;
 
@@ -147,39 +38,58 @@ exit;
 
 sub _process_src {
 
-=podmd
-#### Processing Schema Source Directories
+	my $config = shift;
 
-The script parses through the associated source repositories which are required
-to reside inside a unified root (`git_root_dir`). The names of the (one or
-several) repositories and their schema file source directories (one or several
-per repository) are specified in the `config.yaml` file.
+	foreach my $src_repo (@{ $config->{schema_repos} }) {
+	
+		foreach my $src_dir (@{ $src_repo->{schema_dirs} }) {
+			my $src_path = catdir(
+				$config->{git_root_dir},
+				$src_repo->{project_dir},
+				$src_dir
+			);
+			
+			# the name of the schema dir is extracted from the $id path, unless it has
+			# been specified in the config, as `target_doc_dirname`.
+			my $target_doc_dirname = "";			
+			if ( defined $src_repo->{target_doc_dirname} ) {
+				$target_doc_dirname = $src_repo->{target_doc_dirname} }
+				
+					
+			opendir DIR, $src_path;
+			foreach my $schema (grep{ /ya?ml$/ } readdir(DIR)) {
 
-=cut
+				my $paths = {
+					schema_file => $schema,
+					schema_path => catfile($src_path, $schema),
+					schema_dir_path => $src_path,
+					schema_dir => $src_dir,
+					schema_repo => $src_repo->{project_dir},
+					doc_dirname => $target_doc_dirname
+				};
+				
+				if ( defined $src_repo->{meta_header_filename} ) {
+					$paths->{meta_header_filename} = $src_repo->{meta_header_filename} }
+				
+				if ( defined $src_repo->{tags} ) {
+					$paths->{schema_tags} = $src_repo->{tags} }
+				
+				if (defined $config->{args}->{-filter}) {
+					if ($schema !~ /$config->{args}->{-filter}/) {
+						next } }
+						
+				if (defined $src_repo->{include_matches}) {
+					if (! grep{ $schema =~ /$_/ } @{ $src_repo->{include_matches} }) {
+						next } }
+						
+				if (defined $src_repo->{exclude_matches}) {
+					if (grep{ $schema =~ /$_/ } @{ $src_repo->{exclude_matches} }) {
+						next } }						
 
-  my $config    =   shift;
+				$config->_process_yaml($paths);
 
-  foreach my $src_repo (keys %{ $config->{schema_repos} }) {
-    foreach my $src_dir (@{ $config->{schema_repos}->{$src_repo}->{schema_dirs} }) {
-      my $src_path  =   catdir(
-                          $config->{git_root_dir},
-                          $src_repo,
-                          $src_dir
-                        );
-      opendir DIR, $src_path;
-      foreach my $schema (grep{ /ya?ml$/ } readdir(DIR)) {
-      
-        my $paths = {
-          schema_file   =>  $schema,
-          schema_path   =>  catfile($src_path, $schema),
-          schema_dir    =>  $src_dir,
-          schema_repo   =>  $src_repo,
-        };
-    
-        _process_yaml($config, $paths);
-
-      }
-      close DIR;
+			}
+			close DIR;
 
 }}}
 
@@ -189,20 +99,31 @@ per repository) are specified in the `config.yaml` file.
 
 sub _process_yaml {
 
-  my $config    =   shift;
-  my $paths     =   shift;
+	my $config = shift;
+	my $paths = shift;
 
-  bless $paths;
-  if ($config->{args}->{-filter} =~ /.../) {
+	bless $paths;
+	
+	print "Reading YAML file \"$paths->{schema_path}\"\n";
 
-
-    if ($paths->{schema_file} !~ /$config->{args}->{-filter}/) {
-      return } }
-
-  print "Reading YAML file \"$paths->{schema_path}\"\n";
-
-  my $data      =   LoadFile($paths->{schema_path});
-
+	my $data = LoadFile($paths->{schema_path});
+	
+=podmd
+If a `meta_header_filename` is provided for this schema, its `meta` root parameter
+is used to replace the schema's `meta`.
+TODO: merge meta entries
+=cut
+	
+	if ( defined $paths->{meta_header_filename} ) {
+		my $meta = LoadFile(
+			catfile(
+				$paths->{schema_dir_path},
+				$paths->{meta_header_filename}
+			)
+		);
+		$data->{meta} = $meta->{meta};
+	}
+			
 =podmd
 The class name is derived from the file's "$id" value, assuming a canonical 
 path structure with the class name post-pended with a version:
@@ -216,17 +137,20 @@ does not match.
 
 =cut
 
-  if ($data->{title} !~ /^\w[\w\.\-]+?$/) { return }
-  
-  $paths->_create_file_paths($config, $data);
-  foreach my $outFile (grep{ /outfile_\w*?json/} keys %{ $paths }) {
-    _export_outfile($paths->{$outFile});
-  }
-  
-  if ($data->{meta}->{sb_status} !~ /\w/) {
-  	print "¡¡¡ No sb_status value in $data->{title} => skipping !!!\n";
-    return;
-  }
+	my @errors = ();
+
+	$paths->_create_file_paths($config, $data);
+
+	if ($data->{title} !~ /^\w[\w\.\-]+?$/) {
+		push(@errors, '¡¡¡ No correct "title" value in schema '.$paths->{$schema_file}.'!') }
+
+	if (! grep{ /^$data->{meta}->{sb_status}$/ } @{ $config->{status_levels} }) {
+		push(@errors, '¡¡¡ No correct "sb_status" value in '.$paths->{$schema_file}.' => skipping !!!') }
+		
+	if (@errors > 0) {
+		print "\n".join("\n", @errors)."\n";
+		return;
+	}
 
 =podmd
 
@@ -239,39 +163,41 @@ markdown content, producing
 
 =cut
 
-  my $output    =   {
-    md          =>  q{},
-    jekyll_head =>  _create_jekyll_header($config, $paths, $data),
-  };
+	my $output = {
+		md => q{},
+		jekyll_head => _create_jekyll_header($config, $paths, $data),
+	};
 
-  $output->{md} .=  <<END;
+	$output->{md} .= <<END;
 
 <div id="schema-header-title">
-  <h2>$data->{title} <span id="schema-header-title-project">[$paths->{project}] <a href="$paths->{github_repo_link}" target="_BLANK">&nearr;</a></span> </h2>
+  <h2>$data->{title} <span id="schema-header-title-project">$paths->{project} <a href="$paths->{github_repo_link}" target="_BLANK">&nearr;</a></span> </h2>
 </div>
 
 <table id="schema-header-table">
   <tr>
-    <th>{S}[B] Status Level <a href="$config->{links}->{sb_status_levels}">[i]</a></th>
+    <th>{S}[B] Status <a href="$config->{links}->{sb_status_levels}">[i]</a></th>
     <td><div id="schema-header-status">$data->{meta}->{sb_status}</div></td>
   </tr>
 END
 
-  foreach my $attr (qw(provenance used_by contributors)) {
-    if ($data->{meta}->{$attr}) {
-      my $label =   $attr;
-      
-      if ($attr eq 'contributors') {
-        $output->{md} .=  "\n\n".$config->{jekyll_excerpt_separator}."\n" }
-      
-      $label    =~  s/\_/ /g;
-      $output->{md} .=  '
+	# metadata header parsing
+
+	foreach my $attr (qw(provenance used_by contributors)) {
+		if ($data->{meta}->{$attr}) {
+			my $label =   $attr;
+
+			if ($attr eq 'contributors') {
+				$output->{md} .=  "\n\n".$config->{jekyll_excerpt_separator}."\n" }
+				
+			$label =~ s/\_/ /g;
+			$output->{md} .= '
   <tr>
     <th>'.ucfirst($label).'</th>
     <td>
       <ul>';
-      foreach (@{$data->{meta}->{$attr}}) {
-        my $text    =   $_->{description};
+			foreach (@{$data->{meta}->{$attr}}) {
+				my $text = $_->{description};
 =podmd
 
 A rudimentary CURIE to URL expansion is performed for prefixes defined in the
@@ -279,19 +205,26 @@ configuration file. An example would be the linking of an ORCID id to its web
 address.
 
 =cut
-        my $id  =   _expand_CURIEs($config, $_->{id});
-        if ($id =~ /\:\/\/\w/) {
-          $text =   '<a href="'.$id.'">'.$text.'</a>' }
-        elsif ($id =~ /\w/) {
-          $text .=  ' ('.$id.')' }
-        $output->{md}   .=  "\n<li>".$text."</li>";
-      }
-      $output->{md} .=  "
+				my $id  =   _expand_CURIEs($config, $_->{id});
+				if ($id =~ /\:\/\/\w/) {
+					$text = '<a href="'.$id.'">'.$text.'</a>' }
+				elsif ($id =~ /\w/) {
+					$text .=  ' ('.$id.')' }
+				$output->{md} .=  "\n<li>".$text."</li>";
+				
+			}
+			
+			$output->{md} .=  "
       </ul>
     </td>
   </tr>";
-  }}
-  $output->{md} .=  <<END;
+
+		}
+	}
+	
+	# / metadata header parsing
+
+  	$output->{md} .= <<END;
 
   <tr>
     <th>Source ($paths->{version})</th>
@@ -310,18 +243,24 @@ address.
 
 END
 
-  foreach my $attr (grep{ $data->{$_} =~ /\w/ }  qw(type format minimum pattern description)) {
-    $output->{md}   .=  "  \n__".ucfirst($attr).":__ $data->{$attr}" }
+		foreach my $attr (grep{ $data->{$_} =~ /\w/ }  qw(type format minimum pattern description)) {
+			$output->{md} .=  "  \n__".ucfirst($attr).":__ $data->{$attr}";
+		}
 
-  if ($data->{type} =~ /object/i) {
-    $output->{md}   =   _parse_properties($data, $output->{md}) }
+		if (defined $data->{properties}) {
+			$output->{md} = _parse_properties($data->{properties}, $output->{md}) }
+		elsif (defined $data->{schemas}) {
+			$output->{md} = _parse_properties($data->{schemas}, $output->{md}) }
+			
+		if ($data->{'example'}) {
+			push(@{ $data->{'examples'} }, $data->{'example'}) }
 
-  if (@{ $data->{'examples'} } > 0) {
-    $output->{md}   .=  "\n\n### `$data->{title}` Value "._pluralize("Example", $data->{'examples'})."  \n\n";
-    foreach (@{ $data->{'examples'} }) {
-      $output->{md} .=  "```\n".JSON::XS->new->pretty( 1 )->canonical()->allow_nonref->encode($_)."```\n";
-    }
-  }
+		if (@{ $data->{'examples'} } > 0) {
+			$output->{md} .=  "\n\n### `$data->{title}` Value "._pluralize("Example", $data->{'examples'})."  \n\n";
+			foreach (@{ $data->{'examples'} }) {
+				$output->{md} .=  "```\n".JSON::XS->new->pretty( 1 )->canonical()->allow_nonref->encode($_)."```\n";
+			}
+		}
 
   ##############################################################################
   ##############################################################################
@@ -332,12 +271,10 @@ END
 
 =cut
 
-  $paths->{outfile_plain_md}->{content}           =   $output->{md};
-  $paths->{outfile_jekyll_current_md}->{content}  =   $output->{jekyll_head}.$output->{md}.$config->{schema_disclaimer}."\n";
+	$paths->{outfile_plain_md}->{content} = $output->{md};
+	$paths->{outfile_jekyll_current_md}->{content} = $output->{jekyll_head}.$output->{md}.$config->{schema_disclaimer}."\n";
 
-  foreach my $outFile (grep{ /outfile_\w+?_md/} keys %{ $paths }) {
-   _export_outfile($paths->{$outFile});
-  }
+	$paths->_export_outfiles();
 
 }
 
@@ -376,122 +313,125 @@ The class "$id" values are assumed to have a specific structure, where
 
 =cut
 
-  my $paths     =   shift;
-  my $config    =   shift;
-  my $data      =   shift;
+	my $paths = shift;
+	my $config = shift;
+	my $data = shift;
 
-  my @id_comps  =   split('/', $data->{'$id'}); 
-  $paths->{version} =   pop @id_comps;
-  $paths->{class}   =   pop @id_comps;
-  $paths->{project} =   pop @id_comps;
-  
-  if (! $data->{examples}) { $data->{examples} = [] }
+	my @id_comps = split('/', $data->{'$id'}); 
+	$paths->{version} = pop @id_comps;
+	$paths->{class} = pop @id_comps;
+	$paths->{project} = pop @id_comps;
+	
+	my $doc_dirname = $paths->{project};
+	
+	if ($paths->{doc_dirname} =~ /^\w[^\/]+?\w$/) {
+		$doc_dirname = $paths->{doc_dirname} }
+	
+	if (! $data->{examples}) {
+		$data->{examples} = [] }
 
-# print Dumper(@id_comps, $paths->{project}, $paths->{class}, $paths->{version});
-# print Dumper($data->{examples});
+	my $fileClass = $paths->{schema_file};
+	$fileClass =~ s/\.\w+?$//;
 
-  my $fileClass =   $paths->{schema_file};
-  $fileClass    =~  s/\.\w+?$//;
+	_check_class_name($paths->{class}, $fileClass);
 
-  _check_class_name($paths->{class}, $fileClass);
-  
-  $paths->{outfile_exmpls_json}   =   {
-    path        =>  catfile(
-                      $config->{git_root_dir},
-                      $paths->{schema_repo},                      
-                      $config->{out_dirnames}->{examples},
-                      $paths->{class}.'-examples.json'
-                    ),
-    content     =>  JSON::XS->new->pretty( 1 )->canonical()->encode( $data->{examples} ),
-  };
-  $paths->{outfile_plain_md}  =   {
-    path        =>  catfile(
-                      $config->{git_root_dir},
-                      $paths->{schema_repo},
-                      $config->{out_dirnames}->{markdown},
-                      $paths->{class}.'.md'
-                    ),
-    content     =>  q{}
-  };
-  $paths->{outfile_src_json_current}  =   {
-    path        =>  catfile(
-                      $config->{git_root_dir},
-                      $paths->{schema_repo},
-                      $config->{out_dirnames}->{json},
-                      'current',
-                      $paths->{class}.'.json'
-                    ),
-    content     =>  JSON::XS->new->pretty( 1 )->canonical()->allow_nonref->encode($data),
-  };
-  $paths->{outfile_src_json_versioned}  =   {
-    path        =>  catfile(
-                      $config->{git_root_dir},
-                      $paths->{schema_repo},
-                      $config->{out_dirnames}->{json},
-                      $paths->{version},
-                      $paths->{class}.'.json'
-                    ),
-    content     =>  JSON::XS->new->pretty( 1 )->canonical()->allow_nonref->encode($data),
-  };
-  $paths->{outfile_web_src_json_current}  =   {
-    path        =>  catfile(
-                      $config->{git_root_dir},
-                      $config->{webdocs}->{repo},
-                      $config->{webdocs}->{schemadir},
-                      $paths->{project},
-                      'current',
-                      $paths->{class}.'.json'
-                    ),
-    content     =>  JSON::XS->new->pretty( 1 )->canonical()->allow_nonref->encode($data),
-  };
-  $paths->{outfile_web_src_json_versioned}  =   {
-    path        =>  catfile(
-                      $config->{git_root_dir},
-                      $config->{webdocs}->{repo},
-                      $config->{webdocs}->{schemadir},
-                      $paths->{project},
-                      $paths->{version},
-                      $paths->{class}.'.json'
-                    ),
-    content     =>  JSON::XS->new->pretty( 1 )->canonical()->allow_nonref->encode($data),
-  };
-  $paths->{outfile_jekyll_current_md}   =   {
-    path        =>  catfile(
-                      $config->{git_root_dir},
-                      $config->{webdocs}->{repo},
-                      $config->{webdocs}->{jekylldir},
-                      $paths->{project},
-                      $config->{generator_prefix}.$paths->{class}.'.md'
-                    ),
-    content     =>  q{}
-  };
-  $paths->{github_repo_link} =   join('/',
-    'https://github.com',
-    $config->{github_organisation},
-    $paths->{schema_repo},
-  );
-  $paths->{github_file_link} =   join('/',
-    'https://github.com',
-    $config->{github_organisation},
-    $paths->{schema_repo},
-    'blob',
-    'master',
-    $paths->{schema_dir},
-    $paths->{schema_file}
-  );
-  $paths->{web_link_json}   =   join('/',
-    $config->{webdocs}->{web_schemas_rel},
-    $paths->{project},
-    'current',
-    $paths->{class}.'.json'
-  );
-  $paths->{doc_link_html}   =   join('/',
-    $config->{webdocs}->{web_html_rel},
-    $paths->{project},
-    $paths->{class}.'.html'
-  );
+	$paths->{outfile_exmpls_json} = {
+		path =>  catfile(
+			$config->{git_root_dir},
+			$paths->{schema_repo},                      
+			$config->{out_dirnames}->{examples},
+			$paths->{class}.'-examples.json'
+		),
+		content => JSON::XS->new->pretty( 1 )->canonical()->encode( $data->{examples} ),
+	};
+	$paths->{outfile_plain_md} = {
+		path =>  catfile(
+			$config->{git_root_dir},
+			$paths->{schema_repo},
+			$config->{out_dirnames}->{markdown},
+			$paths->{class}.'.md'
+		),
+		content => q{}
+	};
+	$paths->{outfile_src_json_current} = {
+		path =>  catfile(
+			$config->{git_root_dir},
+			$paths->{schema_repo},
+			$config->{out_dirnames}->{json},
+			'current',
+			$paths->{class}.'.json'
+		),
+		content => JSON::XS->new->pretty( 1 )->canonical()->allow_nonref->encode($data),
+	};
+	$paths->{outfile_src_json_versioned} = {
+		path =>  catfile(
+			$config->{git_root_dir},
+			$paths->{schema_repo},
+			$config->{out_dirnames}->{json},
+			$paths->{version},
+			$paths->{class}.'.json'
+		),
+		content => JSON::XS->new->pretty( 1 )->canonical()->allow_nonref->encode($data),
+	};
+	$paths->{outfile_web_src_json_current} = {
+		path =>  catfile(
+		$config->{git_root_dir},
+		$config->{webdocs}->{repo},
+		$config->{webdocs}->{schemadir},
+		$doc_dirname,
+		'current',
+		$paths->{class}.'.json'
+		),
+		content => JSON::XS->new->pretty( 1 )->canonical()->allow_nonref->encode($data),
+	};
+	$paths->{outfile_web_src_json_versioned} = {
+		path =>  catfile(
+			$config->{git_root_dir},
+			$config->{webdocs}->{repo},
+			$config->{webdocs}->{schemadir},
+			$doc_dirname,
+			$paths->{version},
+			$paths->{class}.'.json'
+		),
+		content => JSON::XS->new->pretty( 1 )->canonical()->allow_nonref->encode($data),
+	};
+	$paths->{outfile_jekyll_current_md} = {
+		path => catfile(
+		$config->{git_root_dir},
+		$config->{webdocs}->{repo},
+		$config->{webdocs}->{jekylldir},
+		$doc_dirname,
+		$config->{generator_prefix}.$paths->{class}.'.md'
+		),
+		content => q{}
+	};
+	$paths->{github_repo_link} = join('/',
+		'https://github.com',
+		$config->{github_organisation},
+		$paths->{schema_repo},
+	);
+	$paths->{github_file_link} = join('/',
+		'https://github.com',
+		$config->{github_organisation},
+		$paths->{schema_repo},
+		'blob',
+		'master',
+		$paths->{schema_dir},
+		$paths->{schema_file}
+	);
+	$paths->{web_link_json} = join('/',
+		$config->{webdocs}->{web_schemas_rel},
+		$doc_dirname,
+		'current',
+		$paths->{class}.'.json'
+	);
+	$paths->{doc_link_html} = join('/',
+		$config->{webdocs}->{web_html_rel},
+		$doc_dirname,
+		$paths->{class}.'.html'
+	);
 
-  return $paths;
+	return $paths;
 
 }
 
@@ -523,10 +463,10 @@ END
 
 sub _parse_properties {
 
-  my $data      =   shift;
-  my $md        =   shift;
-
-  $md           .=  <<END;
+	my $props = shift;
+	my $md = shift;
+	
+	$md .= <<END;
 
 ### Properties
 
@@ -537,17 +477,17 @@ sub _parse_properties {
   </tr>
 END
 
-  foreach my $property ( sort keys %{ $data->{properties} } ) {
-    my $label   =   _format_property_type_html($data->{properties}->{$property});
-    $md         .=  <<END;
+	foreach ( sort keys %{ $props } ) {
+		my $label = _format_property_type_html($props->{$_});
+		$md .= <<END;
   <tr>
-    <th>$property</th>
+    <th>$_</th>
     <td>$label</td>
   </tr>
 END
-  }
+	}
 
-  $md           .=  "\n".'</table>'."\n\n";
+	$md .= "\n".'</table>'."\n\n";
 
 =podmd
 The property overview is followed by the listing of the properties, including
@@ -555,29 +495,38 @@ descriptions and examples.
 
 =cut
 
-  foreach my $property ( sort keys %{ $data->{properties} } ) {
-    my $label   =   _format_property_type_html($data->{properties}->{$property});
-    my $description	=		_format_property_description($data->{properties}->{$property});
-    $md         .=  <<END;
+	foreach my $property ( sort keys %{ $props } ) {
+
+		my $p = $props->{$property};
+		my $label = _format_property_type_html($p);
+		my $description	= _format_property_description($p);
+		$md .= <<END;
 
 #### $property
 
 * type: $label
+END
+		if ( defined $p->{value} ) {	
+			$md .=  "* value: ".$p->{value}."  \n\n" }
+
+		$md .= <<END;
 
 $description
 
 END
-	my $propEx	=		_format_property_examples($data->{properties}->{$property});
+
+		my $propEx = _format_property_examples($p);
 		if (@$propEx > 0) {
-		$md         .=  "##### `$property` Value "._pluralize("Example", $propEx)."  \n\n";
-		foreach (@$propEx) {
-		  $md       .=  "```\n".$_."```\n";
+			$md .=  "##### `$property` Value "._pluralize("Example", $propEx)."  \n\n";
+			foreach (@$propEx) {
+				$md .= "```\n".$_."```\n";
+			}
 		}
-    }
+		
+		
+	}
 
-  }
-
-  return $md;
+	return $md;
 
 }
 
@@ -602,16 +551,28 @@ the page.
 
 =cut
 
-  my $config    =   shift;
-  my $paths     =   shift;
-  my $data      =   shift;
-  my @tags		=	grep{ /../ } (@{ $config->{tags} }, $data->{meta}->{sb_status}, $paths->{project});
-  my $today		=	strftime("%Y-%m-%d", localtime);
-  my $header	=	<<END;
+	my $config = shift;
+	my $paths = shift;
+	my $data = shift;
+	
+	my %tags = ( $paths->{project} > 1 );
+	if (defined $config->{tags}) {
+		foreach (grep { /.../ } @{$config->{tags}}) {
+			$tags{$_} = 1;
+		}
+	}
+	if (defined $paths->{schema_tags}) {
+		foreach (grep { /.../ } @{$paths->{schema_tags}}) {
+			$tags{$_} = 1;
+		}
+	}
+	if (defined $data->{meta}->{sb_status}) {
+		$tags{$data->{meta}->{sb_status}} = 1 }
+		
+	my $j_h = <<END;
 ---
 title: $paths->{class}
 layout: default
-date: $today
 permalink: "$paths->{doc_link_html}"
 sb_status: "$data->{meta}->{sb_status}"
 excerpt_separator: $config->{jekyll_excerpt_separator}
@@ -619,13 +580,11 @@ category:
   - schemas
 tags:
 END
-
-	foreach (@tags) {
-		$header			.=	"  - ".$_."\n";
+	foreach (grep{ /\w/ } sort keys %tags) {
+		$j_h .= "  - $_\n";
 	}
-	$header				.=	"---\n";
-
-	return $header;
+	$j_h .= "---\n";
+	return $j_h;
 
 }
 
@@ -634,7 +593,7 @@ END
 
 sub _format_property_type_html {
 
-  my $prop_data =   shift;
+	my $prop_data = shift;
   
 =podmd
 ##### Hacking the "$ref is a solitary attribute" problem
@@ -650,43 +609,61 @@ the attributes). We'll hope for a more elegant solution ...
 
 =cut
 
-	$prop_data    =   _remap_allof($prop_data);
+	$prop_data = _remap_allof($prop_data);
 		  
-  my $typeLab;
-  my $type      =   q{};
-  if ($prop_data->{type}) {
-  	$type				=		$prop_data->{type} }
-  if (
-  	$type !~ /.../
-  	&&
-  	$prop_data->{'$ref'} =~ /.../
-  ) { $typeLab  =   $prop_data->{'$ref'} }
-  elsif ($type =~ /array/) {
-  	if ($prop_data->{items}->{'$ref'} =~ /.../) {
-    	$typeLab  =   $prop_data->{items}->{'$ref'} }
-  	elsif ( ref($prop_data->{items}) !~ /HASH/ ) {
-    	$typeLab  =   $prop_data->{items} }
-    else {
-    	$typeLab  =   $prop_data->{items}->{type} }
-  }
-  else {
-    $typeLab    =   $type;
-    if ($prop_data->{"format"} =~ /.../) {
-    	$typeLab	.=	' ('.$prop_data->{"format"}.')' }
-  }
+	my $typeLab;
+	my $type = q{};
+	my $isRef = \0;
+	
+	if ($prop_data->{type}) {
+		$type = $prop_data->{type} }
+	if (
+		$type !~ /.../
+		&&
+		$prop_data->{'$ref'} =~ /.../
+	) {
+		$isRef = 1;
+		$typeLab = $prop_data->{'$ref'};
+	} elsif ($type =~ /array/) {
+		if ($prop_data->{items}->{'$ref'} =~ /.../) {
+			$isRef = 1;
+			$typeLab  =  $prop_data->{items}->{'$ref'};
+		} elsif ( ref($prop_data->{items}) !~ /HASH/ ) {
+			$typeLab =   $prop_data->{items} }
+		else {
+			$typeLab =   $prop_data->{items}->{type} }
+	} else {
+		$typeLab = $type;
+		if ($prop_data->{"format"} =~ /.../) {
+			$typeLab .=	' ('.$prop_data->{"format"}.')' }
+	}
 
-  if ($typeLab =~ /\/[\w\-]+?(\.\w+?)?$/) {
-    my $yaml    =   $typeLab;
-    $yaml       =~  s/\.\w+?$//;
-    my $html    =   $yaml;
-    $html       .=  '.html';
-    $html       =~  s/v\d+?\.\d+?\.\d+?\///;
-    $typeLab    .=  ' [<a href="'.$html.'" target="_BLANK">HTML</a>]' }
+	if ($isRef) {
+		$typeLab = _format_link($typeLab) }
 
-  if ($type =~ /array/) {
-    $typeLab    =   'array of "'.$typeLab.'"' }
+	if ($type =~ /array/) {
+		$typeLab = 'array of "'.$typeLab.'"' }
 
-    return $typeLab;
+	return $typeLab;
+
+}
+
+################################################################################
+
+sub _format_link {
+
+	my $ref = shift;
+	
+	if ($ref =~ /^(\w+?\.\w+?)(#.*?)?$/) {
+		my $html = $1;
+		$html =~ s/\.\w+?$/.html/;
+		$html =~ s/v\d+?\.\d+?\.\d+?\///;
+		return $ref.' [<a href="./'.$html.'">HTML</a>]';
+	} elsif ($ref =~ /(^http.+?\.\w+?)(#.*?)?$/) {
+		return $ref.' [<a href="'.$1.'">LINK</a>]';
+	} else {
+		return $ref;
+	}
 
 }
 
@@ -710,23 +687,25 @@ specifications right now) which would being reduced to one
 
 =cut
 
-  my $prop_data =   shift;
-  my $prop      =   {};
+	my $prop_data = shift;
+	my $prop = {};
 
-	if (ref($prop_data) !~ /HASH/) { return $prop_data }
-	if (! $prop_data->{allof}) { return $prop_data }
+	if (ref($prop_data) !~ /HASH/) {
+		return $prop_data }
+	if (! $prop_data->{allof}) {
+		return $prop_data }
 
-  foreach my $of (@{ $prop_data->{allof} }) {		  
-    if ((keys %$of )[0] eq '$ref') {
-      $prop->{'$ref'}  =   $of->{'$ref'} }
-    else {
-      foreach (sort keys %$of) {
-        $prop->{$_}    =   $of->{$_};
-      }
-    }	  
-  }
- 
-  return $prop;
+	foreach my $of (@{ $prop_data->{allof} }) {		  
+		if ((keys %$of )[0] eq '$ref') {
+			$prop->{'$ref'} = $of->{'$ref'} }
+		else {
+			foreach (sort keys %$of) {
+				$prop->{$_} = $of->{$_};
+			}
+		}	  
+	}
+
+	return $prop;
   
 }
  
@@ -735,14 +714,10 @@ specifications right now) which would being reduced to one
 
 sub _format_property_description {
 
-=podmd
+	my $prop_data = shift;
+	$prop_data = _remap_allof($prop_data);
 
-=cut
-
-  my $prop_data =   shift;
-	$prop_data    =   _remap_allof($prop_data);
-
-  return $prop_data->{description};
+	return $prop_data->{description};
 
 }
 
@@ -755,16 +730,28 @@ sub _format_property_examples {
 
 =cut
 
-  my $prop_data =   shift;
-  my $ex_md			=		[];	
-	$prop_data    =   _remap_allof($prop_data);
- 
+	my $prop_data = shift;
+	my $ex_md = [];	
+	$prop_data = _remap_allof($prop_data);
+
 	foreach my $example (@{ $prop_data->{'examples'} }) {
-		if (grep { $prop_data->{type} =~ /$_/ } qw(num int) ) { $example *= 1 }
+		if (grep { $prop_data->{type} =~ /$_/ } qw(num int) ) {
+			$example *= 1 }
+		elsif (
+			($prop_data->{type} eq 'array')
+			&&
+			(grep { $prop_data->{items}->{type} =~ /$_/ } qw(num int) )
+		) {
+			my $ti = [ ];
+			foreach (@$example) {
+				push(@$ti, $_ *= 1);
+			}
+			$example = $ti;		
+		}
 		push(@$ex_md, JSON::XS->new->pretty( 1 )->allow_nonref->canonical()->encode($example));
 	}
 
-  return $ex_md;
+	return $ex_md;
 
 }
 
@@ -784,38 +771,42 @@ sub _expand_CURIEs {
 #### `_expand_CURIEs`
 
 This function expands prefixes in identifiers, based on the parameters provided 
-in `config.yml`. This is thought as a helper for some script/website specific 
+in `config.yaml`. This is thought as a helper for some script/website specific 
 linking, not as a general CURIE expansion utility.
 
 =cut
 
-  my $config    =   shift;
-  my $curie     =   shift;
-
-  if (grep{ $curie =~ /^$_\:/ } keys %{ $config->{prefix_expansions} }) {
-    my $pre     =   (grep{ $curie =~ /^$_\:/ } keys %{ $config->{prefix_expansions} })[0];
-    $curie      =~  s/$pre\:/$config->{prefix_expansions}->{$pre}/;
-  }
-
-  return $curie;
+	my $config = shift;
+	my $curie = shift;
+	
+	if (grep{ $curie =~ /^$_\:/ } keys %{ $config->{prefix_expansions} }) {
+		my $pre = (grep{ $curie =~ /^$_\:/ } keys %{ $config->{prefix_expansions} })[0];
+		$curie =~ s/$pre\:@?/$config->{prefix_expansions}->{$pre}/;
+	}
+	
+	return $curie;
 
 }
 
 ################################################################################
 ################################################################################
 
-sub _export_outfile {
-  
-  my $fileObj   =   shift;
+sub _export_outfiles {
 
-  print "writing $fileObj->{path}\n";
-  my $dir     	=   $fileObj->{path};
-  $dir        	=~  s/\/[^\/]+?\.\w+?$//;
-  if (! -d $dir) {
-  	make_path($dir) }
-  open  (FILE, ">", $fileObj->{path}) || warn '!!! output file '. $fileObj->{path}.' could not be created !!!';
-  print FILE  $fileObj->{content}."\n";
-  close FILE;
+	my $paths = shift;
+	
+	foreach (grep{ /outfile_/} keys %{ $paths }) {
+
+		print "\n=> $paths->{$_}->{path}\n";
+		my $dir = $paths->{$_}->{path};
+		$dir =~ s/\/[^\/]+?\.\w+?$//;
+		if (! -d $dir) {
+			make_path($dir) }
+		open  (FILE, ">", $paths->{$_}->{path}) || warn '!!! output file '. $paths->{$_}->{path}.' could not be created !!!';
+		print FILE  $paths->{$_}->{content}."\n";
+		close FILE;
+		
+	}
   
 }
 
@@ -823,8 +814,11 @@ sub _export_outfile {
 ################################################################################
 
 sub _pluralize {
-  my $word      =   shift;
-  my $list      =   shift;
-  if (@$list > 1) { $word .= 's' }
-  return $word;
+
+	my $word = shift;
+	my $list = shift;
+	if (@$list > 1) {
+		$word .= 's' }
+	return $word;
+
 }

@@ -1,53 +1,60 @@
-$id: https://beacon-project.io/schemas/beacon-v2/RequestedSchemas/2.0.0-draft.1
 $schema: http://json-schema.org/draft-07/schema#
-description: 'Format of the responses and version of the Beacon handling this request.
-
-  '
+$id: https://schemablocks.org/schemas/beacon-v2/RequestedSchemas/2.0.0-draft.3
+title: RequestedSchemas
 meta:
   contributors:
-  - description: ELIXIR Beacon team
-    id: https://beacon-project.io/categories/people.html
-  - description: Sabela de la Torre Pernas
-    id: https://beacon-project.io/people/Sabela-de-la-Torre/
-  - description: Jordi Rambla De Argila
-    id: https://beacon-project.io/people/Jordi-Rambla/
-  - description: Michael Baudis
-    id: orcid:0000-0002-9903-4248
+    - label: ELIXIR Beacon project team
+      id: https://beacon-project.io/categories/people.html
+    - label: Jordi Rambla
+      id: github:@jrambla
+    - label: Sabele de la Torre
+      id: github:@sdelatorrep
+    - label: Mamana Mbiyavanga
+      id: github:@mamanambiya
+    - label: Michael Baudis
+      id: orcid:0000-0002-9903-4248
   provenance:
-  - description: Beacon v2 draft schema
-    id: https://github.com/ga4gh-beacon/specification-v2
-  sb_status: playground
+    - label: Beacon v2
+      id: https://github.com/ga4gh-beacon/specification-v2
+    - label: Progenetix `bycon` project
+      id: https://github.com/progenetix/bycon/
   used_by:
-  - description: Beacon, for Beacon v2 testing
-    id: https://github.com/ga4gh-beacon/specification-v2
-properties:
-  Biosample:
-    example:
-    - ga4gh-phenopacket-biosample-v0.1
-    - ga4gh-schemablocks-biosample-v0.1
-    items:
-      type: string
-    type: array
-  Individual:
-    example:
-    - ga4gh-phenopacket-individual-v0.1
-    - ga4gh-schemablocks-individual-v0.1
-    items:
-      type: string
-    type: array
-  Variant:
-    example:
-    - ga4gh-variant-representation-v0.1
-    - ga4gh-schemablocks-beacon-variant-v0.1
-    items:
-      type: string
-    type: array
-  VariantAnnotation:
-    example:
-    - beacon-variant-annotation-v0.1
-    items:
-      type: string
-    type: array
-title: RequestedSchemas
+    - label: Progenetix database schema (Beacon+ backend)
+      id: https://github.com/progenetix/schemas/
+  sb_status: community
+version: 2.0.0-draft.3
+description: |
+  Format of the responses and version of the Beacon handling this request.
 type: object
-version: 2.0.0-draft.1
+properties:
+  VariantIdentification:
+    type: string
+    example: ga4gh-variant-representation-v0.1
+  VariantAnnotation:
+    type: string
+    example: beacon-variant-annotation-draft-2
+  Individual:
+    type: string
+    example: ga4gh-phenopacket-individual-v0.1
+  Biosample:
+    type: string
+    example: ga4gh-schemablocks-biosample-v0.1
+  Run:
+    type: string
+    example: beacon-run-draft-3
+  Analysis:
+    type: string
+    example: beacon-analysis-draft-2
+  VariantInSample:
+    type: string
+    example: beacon-variant-in-sample-draft-3
+  VariantInterpretation:
+    type: string
+    example: beacon-variant-interpretation-draft-2
+  Interactor:
+    type: string
+    example: beacon-interactor-draft-2
+  Cohort:
+    type: string
+    example: beacon-cohort-draft-3
+

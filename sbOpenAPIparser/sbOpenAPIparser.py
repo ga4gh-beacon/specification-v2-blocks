@@ -1,6 +1,7 @@
 #!/usr/local/bin/python3
 
-import sys, yaml, re
+import sys, re
+from ruamel.yaml import YAML
 from os import path as path
 import argparse
 
@@ -56,18 +57,23 @@ def main():
 
     end_podmd"""
 
+    yaml = YAML()
+    yaml.indent(mapping=2, sequence=4, offset=2)
+
     with open( path.join( path.abspath( dir_path ), "config.yaml" ) ) as cf:
-        config = yaml.load( cf , Loader=yaml.FullLoader)
+        config = yaml.load( cf )
 
     args = _get_args()
     config = _check_args(config, args)
 
     with open( config[ "schemafile" ] ) as f:
-        oas = yaml.load( f , Loader=yaml.FullLoader)
+        oas = yaml.load( f )
 
     if path.isfile( config[ "headerfile" ] ):
         with open( config[ "headerfile" ] ) as f:
-            config.update( { "header": yaml.load( f , Loader=yaml.FullLoader) } )
+            config.update( { "header": yaml.load( f ) } )
+
+    _config_add_project_specs(config, oas)
 
     for s_name in oas["components"]["schemas"].keys():
 
@@ -77,10 +83,8 @@ def main():
         s = oas["components"]["schemas"][ s_name ]
 
         s = _add_header(config, s)
-        s = _add_project_specs(oas, s)
+        s.insert(2, "title", s_name)
         s = _fix_relative_ref_paths(s)
-
-        s[ "title" ] = s_name
 
         if "$id" in s:
             s[ "$id" ] = re.sub( r"__schema__", s_name, s[ "$id" ] )
@@ -119,31 +123,42 @@ The output directory:
         print("No inputfile has ben given; please use `-f` to specify")
         sys.exit( )
 
-    return(config)
+    return config
+
+################################################################################
+
+def _config_add_project_specs(config, oas):
+
+    h_k_n = len( config["header"].keys() )
+
+    if "info" in oas:
+        if "version" in oas[ "info" ]:
+            config["header"].update( { "$id" : re.sub( r"__version__", oas["info"][ "version" ], config["header"]["$id" ]) } )
+            config["header"].insert(h_k_n, "version", oas["info"][ "version" ])
+
+    return config
 
 ################################################################################
 
 def _add_header(config, s):
 
-    for p in config[ "header" ]:
-        s[ p ] = config[ "header" ][ p ]
+    pos = 0
 
-    return(s)
+    for k, v in config[ "header" ].items():
+        print(k)
+        s.insert(pos, k, v)
+        pos += 1
 
-################################################################################
-
-def _add_project_specs(oas, s):
-
-    if "info" in oas:
-        if "version" in oas[ "info" ]:
-            s[ "version" ] = oas[ "info" ][ "version" ]
-            s[ "$id" ] = re.sub( r"__version__", s[ "version" ], s[ "$id" ] )
-
-    return(s)
+    return s
 
 ################################################################################
 
 def _fix_relative_ref_paths(s):
+
+    """podmd
+    The path fixes here are very much "experience driven" and should be replaced
+    with a more systematic version, including existence & type checking ...
+    podmd"""
 
     properties = s
     if "properties" in s:
@@ -152,7 +167,7 @@ def _fix_relative_ref_paths(s):
     for p in properties.keys():
 
         if '$ref' in properties[ p ]:
-            properties[ p ][ '$ref' ] = re.sub( '#/components/schemas/', './', properties[ p ][ '$ref' ] )
+            properties[ p ][ '$ref' ] = re.sub( '#/components/schemas/', '', properties[ p ][ '$ref' ] )
         if 'items' in properties[ p ]:
             if '$ref' in properties[ p ][ "items" ]:
                 properties[ p ][ "items" ][ '$ref' ] = re.sub( '#/components/schemas/', './', properties[ p ][ "items" ][ '$ref' ] )
@@ -162,7 +177,17 @@ def _fix_relative_ref_paths(s):
         else:
             s.update( { p: properties[ p ] } )
 
-    return(s)
+    if "oneOf" in s:
+        o_o = [ ]
+        for o in s[ "oneOf" ]:
+            if "$ref" in o.keys():
+                v = re.sub( '#/components/schemas/', '', o["$ref"] )
+                o_o.append( { "$ref": v} )
+            else:
+                o_o.append( o )
+        s.update( { "oneOf": o_o } )
+
+    return s
 
 ################################################################################
 ################################################################################

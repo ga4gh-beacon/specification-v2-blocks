@@ -1,20 +1,31 @@
 ---
 github_organisation: ga4gh-beacon
-site_domain_name: genomebeacons.org
-url: 'http://genomebeacons.org'
-tools_repo: tools
+site_domain_name: beacon-project.io
+url: 'https://beacon-project.io'
 tags:
   - code
   - specification
-  - v2
+  - schemas
 categories:
   - schemas
+  - howto
+status_levels:
+  - playground
+  - community
+  - proposed
+  - implemented
+  - core
 schema_repos:
-  specification-v2-test-schemas:
-    schema_dirs:
-      - schemas
+  - project_dir: specification-v2-blocks
     tags:
       - v2
+      - beacon
+    schema_dirs:
+      - schemas
+    target_doc_dirname: beacon-v2
+#    include_matches: [ ]
+#    exclude_matches: [ ]
+#    meta_header_filename: ""
 out_dirnames:
   json: generated/json
   markdown: generated/doc
@@ -27,15 +38,14 @@ webdocs:
   web_html_rel: "/schemas"
 generator_prefix: '+generated__'
 schema_disclaimer: |
-  <hr/>
   <div id="schema-footer">
-  This schema representation is for information and testing purposes. The authorative 
-  version remains with the main Beacon development project.
+  This schema representation is for information purposes. The authorative 
+  version remains with the developing project (see "provenance").
   </div>
 jekyll_excerpt_separator: "<!--more-->"
 prefix_expansions:
   orcid: 'https://orcid.org/'
   PMID: 'https://www.ncbi.nlm.nih.gov/pubmed/'
+  github: 'https://github.com/'
 links:
   sb_status_levels: "https://schemablocks.org/about/sb-status-levels.html"
-podmd: ''
