@@ -33,7 +33,7 @@
          },
          {
             "id" : "https://github.com/progenetix/bycon/",
-            "label" : "Progenetix `bycon` project"
+            "label" : "Progenetix bycon project"
          }
       ],
       "sb_status" : "community",
@@ -46,10 +46,10 @@
    },
    "properties" : {
       "meta" : {
-         "$ref" : "RequestMeta"
+         "$ref" : "RequestMeta.yaml#/"
       },
       "query" : {
-         "$ref" : "RequestQuery"
+         "$ref" : "RequestQuery.yaml#/"
       }
    },
    "required" : [

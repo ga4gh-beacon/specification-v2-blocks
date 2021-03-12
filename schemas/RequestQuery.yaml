@@ -1,6 +1,5 @@
 $schema: http://json-schema.org/draft-07/schema#
 $id: https://schemablocks.org/schemas/beacon-v2/RequestQuery/2.0.0-draft.3
-title: RequestQuery
 meta:
   contributors:
     - label: ELIXIR Beacon project team
@@ -16,40 +15,41 @@ meta:
   provenance:
     - label: Beacon v2
       id: https://github.com/ga4gh-beacon/specification-v2
-    - label: Progenetix `bycon` project
+    - label: Progenetix bycon project
       id: https://github.com/progenetix/bycon/
   used_by:
     - label: Progenetix database schema (Beacon+ backend)
       id: https://github.com/progenetix/schemas/
   sb_status: community
 version: 2.0.0-draft.3
+title: RequestQuery
 description: |
   Description pending
 type: object
 properties:
   individual:
-    $ref: IndividualFields
+    $ref: IndividualFields.yaml#/
   biosample:
-    $ref: BiosampleFields
+    $ref: BiosampleFields.yaml#/
   g_variant:
-    $ref: GenomicVariantFields
+    $ref: GenomicVariantFields.yaml#/
   run:
-    $ref: RunFields
+    $ref: RunFields.yaml#/
   analysis:
-    $ref: AnalysisFields
+    $ref: AnalysisFields.yaml#/
   interactor:
-    $ref: InteractorFields
+    $ref: InteractorFields.yaml#/
   variant_in_sample:
-    $ref: VariantInSampleFields
+    $ref: VariantInSampleFields.yaml#/
   variant_interpretation:
-    $ref: VariantInterpretationFields
+    $ref: VariantInterpretationFields.yaml#/
   cohort:
-    $ref: CohortFields
+    $ref: CohortFields.yaml#/
   datasets:
-    $ref: RequestDatasets
+    $ref: RequestDatasets.yaml#/
   filters:
-    $ref: Filters
+    $ref: Filters.yaml#/
   customFilters:
-    $ref: CustomFilters
+    $ref: CustomFilters.yaml#/
   pagination:
-    $ref: Pagination
+    $ref: Pagination.yaml#/

@@ -55,7 +55,6 @@ sub _process_src {
 			if ( defined $src_repo->{target_doc_dirname} ) {
 				$target_doc_dirname = $src_repo->{target_doc_dirname} }
 				
-					
 			opendir DIR, $src_path;
 			foreach my $schema (grep{ /ya?ml$/ } readdir(DIR)) {
 
@@ -75,14 +74,17 @@ sub _process_src {
 					$paths->{schema_tags} = $src_repo->{tags} }
 				
 				if (defined $config->{args}->{-filter}) {
+					print "=> Filtering for $config->{args}->{-filter}\n";
 					if ($schema !~ /$config->{args}->{-filter}/) {
 						next } }
 						
 				if (defined $src_repo->{include_matches}) {
+					print "=> Filtering for include_matches\n";
 					if (! grep{ $schema =~ /$_/ } @{ $src_repo->{include_matches} }) {
 						next } }
 						
 				if (defined $src_repo->{exclude_matches}) {
+					print "=> Filtering for exclude_matches\n";
 					if (grep{ $schema =~ /$_/ } @{ $src_repo->{exclude_matches} }) {
 						next } }						
 
@@ -171,75 +173,56 @@ markdown content, producing
 	$output->{md} .= <<END;
 
 <div id="schema-header-title">
-  <h2>$data->{title} <span id="schema-header-title-project">$paths->{project} <a href="$paths->{github_repo_link}" target="_BLANK">&nearr;</a></span> </h2>
+  <h2><span id="schema-header-title-project">$paths->{project}</span> $data->{title} <a href="$paths->{github_repo_link}" target="_BLANK">[ &nearr; ]</a></h2>
 </div>
 
 <table id="schema-header-table">
-  <tr>
-    <th>{S}[B] Status <a href="$config->{links}->{sb_status_levels}">[i]</a></th>
-    <td><div id="schema-header-status">$data->{meta}->{sb_status}</div></td>
-  </tr>
+<tr>
+<th>{S}[B] Status <a href="$config->{links}->{sb_status_levels}">[i]</a></th>
+<td><div id="schema-header-status">$data->{meta}->{sb_status}</div></td>
+</tr>
 END
 
 	# metadata header parsing
 
 	foreach my $attr (qw(provenance used_by contributors)) {
 		if ($data->{meta}->{$attr}) {
-			my $label =   $attr;
+			my $label = $attr;
 
 			if ($attr eq 'contributors') {
-				$output->{md} .=  "\n\n".$config->{jekyll_excerpt_separator}."\n" }
+				$output->{md} .= "\n\n".$config->{jekyll_excerpt_separator}."\n" }
 				
 			$label =~ s/\_/ /g;
-			$output->{md} .= '
-  <tr>
-    <th>'.ucfirst($label).'</th>
-    <td>
-      <ul>';
+			$output->{md} .= "<tr><th>".ucfirst($label)."</th><td><ul>\n";
 			foreach (@{$data->{meta}->{$attr}}) {
-				my $text = $_->{description};
+				my $text = $_->{description}.$_->{label};
 =podmd
-
 A rudimentary CURIE to URL expansion is performed for prefixes defined in the
 configuration file. An example would be the linking of an ORCID id to its web 
 address.
 
 =cut
-				my $id  =   _expand_CURIEs($config, $_->{id});
+				my $id = _expand_CURIEs($config, $_->{id});
 				if ($id =~ /\:\/\/\w/) {
 					$text = '<a href="'.$id.'">'.$text.'</a>' }
 				elsif ($id =~ /\w/) {
 					$text .=  ' ('.$id.')' }
-				$output->{md} .=  "\n<li>".$text."</li>";
-				
-			}
-			
-			$output->{md} .=  "
-      </ul>
-    </td>
-  </tr>";
-
+				$output->{md} .= "<li>".$text."</li>\n";				
+			}			
+			$output->{md} .= "</ul></td></tr>\n";
 		}
 	}
 	
 	# / metadata header parsing
 
   	$output->{md} .= <<END;
-
-  <tr>
-    <th>Source ($paths->{version})</th>
-    <td>
-      <ul>
-        <li><a href="current/$paths->{class}.json" target="_BLANK">raw source [JSON]</a></li>
-        <li><a href="$paths->{github_file_link}" target="_BLANK">Github</a></li>
-      </ul>
-    </td>
-  </tr>
+<tr><th>Source ($paths->{version})</th><td><ul>
+<li><a href="current/$paths->{class}.json" target="_BLANK">raw source [JSON]</a></li>
+<li><a href="$paths->{github_file_link}" target="_BLANK">Github</a></li>
+</ul></td></tr>
 </table>
 
-<div id="schema-attributes-title">
-  <h3>Attributes</h3>
-</div>
+<div id="schema-attributes-title"><h3>Attributes</h3></div>
 
 END
 
@@ -471,23 +454,17 @@ sub _parse_properties {
 ### Properties
 
 <table id="schema-properties-table">
-  <tr>
-    <th>Property</th>
-    <th>Type</th>
-  </tr>
+<tr><th>Property</th><th>Type</th></tr>
 END
 
 	foreach ( sort keys %{ $props } ) {
 		my $label = _format_property_type_html($props->{$_});
 		$md .= <<END;
-  <tr>
-    <th>$_</th>
-    <td>$label</td>
-  </tr>
+<tr><th>$_</th><td>$label</td></tr>
 END
 	}
 
-	$md .= "\n".'</table>'."\n\n";
+	$md .= "</table>\n\n";
 
 =podmd
 The property overview is followed by the listing of the properties, including
@@ -508,7 +485,6 @@ descriptions and examples.
 END
 		if ( defined $p->{value} ) {	
 			$md .=  "* value: ".$p->{value}."  \n\n" }
-
 		$md .= <<END;
 
 $description
@@ -557,12 +533,12 @@ the page.
 	
 	my %tags = ( $paths->{project} > 1 );
 	if (defined $config->{tags}) {
-		foreach (grep { /.../ } @{$config->{tags}}) {
+		foreach (grep { /\w/ } @{$config->{tags}}) {
 			$tags{$_} = 1;
 		}
 	}
 	if (defined $paths->{schema_tags}) {
-		foreach (grep { /.../ } @{$paths->{schema_tags}}) {
+		foreach (grep { /\w/ } @{$paths->{schema_tags}}) {
 			$tags{$_} = 1;
 		}
 	}
@@ -654,7 +630,7 @@ sub _format_link {
 
 	my $ref = shift;
 	
-	if ($ref =~ /^(\w+?\.\w+?)(#.*?)?$/) {
+	if ($ref =~ /^(\w+?\.\w+?)(#\/.*?)?$/) {
 		my $html = $1;
 		$html =~ s/\.\w+?$/.html/;
 		$html =~ s/v\d+?\.\d+?\.\d+?\///;

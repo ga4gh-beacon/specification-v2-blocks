@@ -32,7 +32,7 @@
          },
          {
             "id" : "https://github.com/progenetix/bycon/",
-            "label" : "Progenetix `bycon` project"
+            "label" : "Progenetix bycon project"
          }
       ],
       "sb_status" : "community",
@@ -45,7 +45,7 @@
    },
    "properties" : {
       "handoverType" : {
-         "$ref" : "HandoverType"
+         "$ref" : "HandoverType.yaml#/"
       },
       "note" : {
          "description" : "An optional text including considerations on the handover link \nprovided.\n",

@@ -33,7 +33,7 @@
          },
          {
             "id" : "https://github.com/progenetix/bycon/",
-            "label" : "Progenetix `bycon` project"
+            "label" : "Progenetix bycon project"
          }
       ],
       "sb_status" : "community",
@@ -62,7 +62,7 @@
          "type" : "string"
       },
       "dataUseConditions" : {
-         "$ref" : "DataUseConditions"
+         "$ref" : "DataUseConditions.yaml#/"
       },
       "description" : {
          "description" : "Description of the dataset.\n",

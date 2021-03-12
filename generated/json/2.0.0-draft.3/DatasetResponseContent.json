@@ -33,7 +33,7 @@
          },
          {
             "id" : "https://github.com/progenetix/bycon/",
-            "label" : "Progenetix `bycon` project"
+            "label" : "Progenetix bycon project"
          }
       ],
       "sb_status" : "community",
@@ -46,14 +46,14 @@
    },
    "properties" : {
       "error" : {
-         "$ref" : "BeaconError"
+         "$ref" : "BeaconError.yaml#/"
       },
       "info" : {
          "type" : "object"
       },
       "results" : {
          "items" : {
-            "$ref" : "./BeaconDataset"
+            "$ref" : "BeaconDataset.yaml#/"
          },
          "type" : "array"
       }

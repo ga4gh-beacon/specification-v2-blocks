@@ -1,6 +1,5 @@
 $schema: http://json-schema.org/draft-07/schema#
 $id: https://schemablocks.org/schemas/beacon-v2/Variant/2.0.0-draft.3
-title: Variant
 meta:
   contributors:
     - label: ELIXIR Beacon project team
@@ -16,16 +15,17 @@ meta:
   provenance:
     - label: Beacon v2
       id: https://github.com/ga4gh-beacon/specification-v2
-    - label: Progenetix `bycon` project
+    - label: Progenetix bycon project
       id: https://github.com/progenetix/bycon/
   used_by:
     - label: Progenetix database schema (Beacon+ backend)
       id: https://github.com/progenetix/schemas/
   sb_status: community
 version: 2.0.0-draft.3
+title: Variant
 description: |
   Variant description using either the default or an alternative schema.
 type: object
 oneOf:
-  - $ref: https://raw.githubusercontent.com/ga4gh-beacon/specification-v2-default-schemas/draft.3/default_variant_identification_schema.yamlVariantIdentification
-  - $ref: AlternativeSchema
+  - $ref: https://raw.githubusercontent.com/ga4gh-beacon/specification-v2-default-schemas/draft.3/default_variant_identification_schema.yamlVariantIdentification.yaml#/
+  - $ref: AlternativeSchema.yaml#/

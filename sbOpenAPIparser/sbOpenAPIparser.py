@@ -64,7 +64,7 @@ def main():
         config = yaml.load( cf )
 
     args = _get_args()
-    config = _check_args(config, args)
+    _check_args(config, args)
 
     with open( config[ "schemafile" ] ) as f:
         oas = yaml.load( f )
@@ -81,10 +81,8 @@ def main():
         print(f_name)
 
         s = oas["components"]["schemas"][ s_name ]
-
-        s = _add_header(config, s)
-        s.insert(2, "title", s_name)
-        s = _fix_relative_ref_paths(s)
+        _add_header(config, s, s_name)
+        _fix_relative_ref_paths(s)
 
         if "$id" in s:
             s[ "$id" ] = re.sub( r"__schema__", s_name, s[ "$id" ] )
@@ -99,13 +97,13 @@ def main():
 def _check_args(config, args):
 
     if config[ "outdir" ]:
-        config[ "outdir" ] = path.join( path.abspath( dir_path ), path.abspath( dir_path ), config[ "outdir" ])
+        config.update({ "outdir": path.join( path.abspath( dir_path ), path.abspath( dir_path ), config[ "outdir" ]) } )
     if config[ "schemafile" ]:
-        config[ "schemafile" ] = path.join( path.abspath( dir_path ), path.abspath( dir_path ), config[ "schemafile" ])
+        config.update({ "schemafile": path.join( path.abspath( dir_path ), path.abspath( dir_path ), config[ "schemafile" ]) } )
 
     for a in vars(args).keys():
         if vars(args)[a]:
-            config[ a ] = vars(args)[a]
+            config.update({ a: vars(args)[a] })
 
     if not config[ "project" ]:
         print("No project name has been provided; please use `-p` to specify")
@@ -140,14 +138,15 @@ def _config_add_project_specs(config, oas):
 
 ################################################################################
 
-def _add_header(config, s):
+def _add_header(config, s, s_name):
 
     pos = 0
 
     for k, v in config[ "header" ].items():
-        print(k)
         s.insert(pos, k, v)
         pos += 1
+
+    s.insert(pos, "title", s_name)
 
     return s
 
@@ -167,10 +166,10 @@ def _fix_relative_ref_paths(s):
     for p in properties.keys():
 
         if '$ref' in properties[ p ]:
-            properties[ p ][ '$ref' ] = re.sub( '#/components/schemas/', '', properties[ p ][ '$ref' ] )
+            properties[ p ][ '$ref' ] = re.sub( '#/components/schemas/', '', properties[ p ][ '$ref' ] ) + '.yaml#/'
         if 'items' in properties[ p ]:
             if '$ref' in properties[ p ][ "items" ]:
-                properties[ p ][ "items" ][ '$ref' ] = re.sub( '#/components/schemas/', './', properties[ p ][ "items" ][ '$ref' ] )
+                properties[ p ][ "items" ][ '$ref' ] = re.sub( '#/components/schemas/', '', properties[ p ][ "items" ][ '$ref' ] ) + '.yaml#/'
 
         if "properties" in s:
             s[ "properties" ].update( { p: properties[ p ] } )
@@ -181,7 +180,7 @@ def _fix_relative_ref_paths(s):
         o_o = [ ]
         for o in s[ "oneOf" ]:
             if "$ref" in o.keys():
-                v = re.sub( '#/components/schemas/', '', o["$ref"] )
+                v = re.sub( '#/components/schemas/', '', o["$ref"] ) + '.yaml#/'
                 o_o.append( { "$ref": v} )
             else:
                 o_o.append( o )

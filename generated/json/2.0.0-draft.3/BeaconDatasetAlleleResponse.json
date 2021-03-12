@@ -33,7 +33,7 @@
          },
          {
             "id" : "https://github.com/progenetix/bycon/",
-            "label" : "Progenetix `bycon` project"
+            "label" : "Progenetix bycon project"
          }
       ],
       "sb_status" : "community",
@@ -53,7 +53,7 @@
       },
       "datasetHandover" : {
          "items" : {
-            "$ref" : "./Handover"
+            "$ref" : "Handover.yaml#/"
          },
          "type" : "array"
       },

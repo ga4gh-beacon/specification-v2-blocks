@@ -1,6 +1,5 @@
 $schema: http://json-schema.org/draft-07/schema#
 $id: https://schemablocks.org/schemas/beacon-v2/BiosampleResponseContent/2.0.0-draft.3
-title: BiosampleResponseContent
 meta:
   contributors:
     - label: ELIXIR Beacon project team
@@ -16,13 +15,14 @@ meta:
   provenance:
     - label: Beacon v2
       id: https://github.com/ga4gh-beacon/specification-v2
-    - label: Progenetix `bycon` project
+    - label: Progenetix bycon project
       id: https://github.com/progenetix/bycon/
   used_by:
     - label: Progenetix database schema (Beacon+ backend)
       id: https://github.com/progenetix/schemas/
   sb_status: community
 version: 2.0.0-draft.3
+title: BiosampleResponseContent
 description: |
   Description pending
 type: object
@@ -37,21 +37,21 @@ properties:
       error, in which case `error` has to be non-null.
     type: boolean
   error:
-    $ref: BeaconError
+    $ref: BeaconError.yaml#/
   numTotalResults:
     type: integer
     minimum: 0
   results:
     type: array
     items:
-      $ref: ./BiosampleResponseResults
+      $ref: BiosampleResponseResults.yaml#/
   info:
     type: object
   resultsHandover:
     type: array
     items:
-      $ref: ./Handover
+      $ref: Handover.yaml#/
   beaconHandover:
     type: array
     items:
-      $ref: ./Handover
+      $ref: Handover.yaml#/

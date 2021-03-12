@@ -33,7 +33,7 @@
          },
          {
             "id" : "https://github.com/progenetix/bycon/",
-            "label" : "Progenetix `bycon` project"
+            "label" : "Progenetix bycon project"
          }
       ],
       "sb_status" : "community",
@@ -56,7 +56,7 @@
       },
       "filteringTerms" : {
          "items" : {
-            "$ref" : "./FilteringTerm"
+            "$ref" : "FilteringTerm.yaml#/"
          },
          "type" : "array"
       }

@@ -1,6 +1,5 @@
 $schema: http://json-schema.org/draft-07/schema#
 $id: https://schemablocks.org/schemas/beacon-v2/RequestMeta/2.0.0-draft.3
-title: RequestMeta
 meta:
   contributors:
     - label: ELIXIR Beacon project team
@@ -16,19 +15,20 @@ meta:
   provenance:
     - label: Beacon v2
       id: https://github.com/ga4gh-beacon/specification-v2
-    - label: Progenetix `bycon` project
+    - label: Progenetix bycon project
       id: https://github.com/progenetix/bycon/
   used_by:
     - label: Progenetix database schema (Beacon+ backend)
       id: https://github.com/progenetix/schemas/
   sb_status: community
 version: 2.0.0-draft.3
+title: RequestMeta
 description: |
   Requested schemas and versions to be used in the response.
 type: object
 properties:
   requestedSchemas:
-    $ref: RequestedSchemas
+    $ref: RequestedSchemas.yaml#/
   apiVersion:
     description: |
       Schemas & versions default for this Beacon version will be used to 

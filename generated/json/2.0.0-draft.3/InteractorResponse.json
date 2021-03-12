@@ -33,7 +33,7 @@
          },
          {
             "id" : "https://github.com/progenetix/bycon/",
-            "label" : "Progenetix `bycon` project"
+            "label" : "Progenetix bycon project"
          }
       ],
       "sb_status" : "community",
@@ -46,10 +46,10 @@
    },
    "properties" : {
       "meta" : {
-         "$ref" : "ResponseMeta"
+         "$ref" : "ResponseMeta.yaml#/"
       },
       "response" : {
-         "$ref" : "InteractorResponseContent"
+         "$ref" : "InteractorResponseContent.yaml#/"
       }
    },
    "required" : [
