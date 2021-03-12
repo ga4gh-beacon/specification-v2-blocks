@@ -1,9 +1,7 @@
-## specification-v2-test-schemas
-#### Test versions of schemas from the Beacon v2 development project
+## specification-v2-blocks
+#### "Blockified" schemas from Beacon v2
 
-This repository contains **test** representations of schemas from the Beacon v2 development project. Schemas here are represented as separate files, in concordance with schema representations used by the [GA4GH Schemablocks {S}[B]](https://schemablocks.org/categories/schemas.html) initiative.
-
-Briefly, single schemas extracted from the Beacon v2 code base are deparsed into [JSON](./generated/json/), [examples](./generated/examples/) and [Markdown](./generated/doc/) documentation files as well as being equipped with metadata and processed into web pages utilizing the Jekyll / GitHub Pages system.
+This repository contains schemas from the Beacon v2 development project. Schemas here are represented as separate files, in concordance with schema representations used by the [GA4GH Schemablocks {S}[B]](https://schemablocks.org/categories/schemas.html) initiative.
 
 The representations here should be considered **ephemeral and non-autoritive!**
 
@@ -14,7 +12,7 @@ The representations here should be considered **ephemeral and non-autoritive!**
 The complete test setup relies on the existence of clones of 3 project 
 directories, in the same parent directory:
 
-* `specification-v2-test-schemas`
+* `specification-v2-blocks`
   - this repository, which contains some tool scripts and otherwise receives the
   generated files (except the Jekyll input files)
 * `specification-v2`
@@ -22,15 +20,22 @@ directories, in the same parent directory:
 * `ga4gh-beacon.github.io`
   - the Beacon project website repository, i.e. a Github Pages source repository
 
-From the parent directory, a complete process to convert & show the schema
+From this directory, a complete process to convert & show the schema
 information consists of basically 3 commands:
 
 ```
-python3 specification-v2-test-schemas/sbOpenAPIparser/sbOpenAPIparser.py
-perl specification-v2-test-schemas/sbSchemaParser/sbSchemaParser.pl
-cd ga4gh-beacon.github.io
+python3 ./sbOpenAPIparser/sbOpenAPIparser.py
+perl ./sbSchemaParser/sbSchemaParser.pl
+cd ../ga4gh-beacon.github.io
 bundle exec jekyll serve
 ```
+
+Briefly, single schemas extracted from the Beacon v2 code base are deparsed into [JSON](./generated/json/), [examples](./generated/examples/) and [Markdown](./generated/doc/) documentation. Also, web pages are generated in the corresponding web project utilizing the Jekyll / GitHub Pages system - this is done by potentially processing projects. Please see / edit the configuration filea at
+
+* [sbOpenAPIparser/config.yaml](./sbOpenAPIparser/config.yaml)
+  - e.g. source file definition and header configuration
+* [sbSchemaParser/config.yaml](./sbSchemaParser/config.yaml)
+  - e.g. processing/target directories
 
 The use of a local test server requires the proper setup for Jekyll; some help
 can be found through the [Progenetix :: Template](https://progenetix.github.io/progenetix-site-template/howto/jekyllinstallation/)
