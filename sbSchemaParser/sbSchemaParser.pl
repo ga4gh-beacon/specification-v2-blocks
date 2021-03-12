@@ -49,6 +49,9 @@ sub _process_src {
 				$src_dir
 			);
 			
+			if (defined $config->{args}->{-filter}) {
+				print "=> Filtering for $config->{args}->{-filter}\n" }
+			
 			# the name of the schema dir is extracted from the $id path, unless it has
 			# been specified in the config, as `target_doc_dirname`.
 			my $target_doc_dirname = "";			
@@ -74,7 +77,6 @@ sub _process_src {
 					$paths->{schema_tags} = $src_repo->{tags} }
 				
 				if (defined $config->{args}->{-filter}) {
-					print "=> Filtering for $config->{args}->{-filter}\n";
 					if ($schema !~ /$config->{args}->{-filter}/) {
 						next } }
 						
@@ -226,24 +228,28 @@ address.
 
 END
 
-		foreach my $attr (grep{ $data->{$_} =~ /\w/ }  qw(type format minimum pattern description)) {
-			$output->{md} .=  "  \n__".ucfirst($attr).":__ $data->{$attr}";
-		}
+	foreach my $attr (grep{ $data->{$_} =~ /\w/ }  qw(type format minimum pattern description)) {
+		$output->{md} .=  "  \n__".ucfirst($attr).":__ $data->{$attr}";
+	}
 
-		if (defined $data->{properties}) {
-			$output->{md} = _parse_properties($data->{properties}, $output->{md}) }
-		elsif (defined $data->{schemas}) {
-			$output->{md} = _parse_properties($data->{schemas}, $output->{md}) }
-			
-		if ($data->{'example'}) {
-			push(@{ $data->{'examples'} }, $data->{'example'}) }
+	if (defined $data->{properties}) {
+		$output->{md} = _parse_properties($data->{properties}, $output->{md}) }
+	elsif (defined $data->{schemas}) {
+		$output->{md} = _parse_properties($data->{schemas}, $output->{md}) }
+		
+	if (! defined $data->{examples}) {
+		$data->{examples} = [] }
+		
+	if ($data->{'example'}) {
+		push(@{ $data->{'examples'} }, $data->{'example'}) }
 
-		if (@{ $data->{'examples'} } > 0) {
-			$output->{md} .=  "\n\n### `$data->{title}` Value "._pluralize("Example", $data->{'examples'})."  \n\n";
-			foreach (@{ $data->{'examples'} }) {
-				$output->{md} .=  "```\n".JSON::XS->new->pretty( 1 )->canonical()->allow_nonref->encode($_)."```\n";
-			}
+	if (@{ $data->{'examples'} } > 0) {
+		$output->{md} .=  "\n\n### `$data->{title}` Value "._pluralize("Example", $data->{'examples'})."  \n\n";
+		foreach (@{ $data->{'examples'} }) {
+			$output->{md} .=  "```\n".JSON::XS->new->pretty( 1 )->canonical()->allow_nonref->encode($_)."```\n";
 		}
+	}
+
 
   ##############################################################################
   ##############################################################################
@@ -254,6 +260,8 @@ END
 
 =cut
 
+	$paths->{outfile_exampels_json}->{content} = JSON::XS->new->pretty( 1 )->canonical()->encode( $data->{examples} );
+	
 	$paths->{outfile_plain_md}->{content} = $output->{md};
 	$paths->{outfile_jekyll_current_md}->{content} = $output->{jekyll_head}.$output->{md}.$config->{schema_disclaimer}."\n";
 
@@ -317,15 +325,17 @@ The class "$id" values are assumed to have a specific structure, where
 	$fileClass =~ s/\.\w+?$//;
 
 	_check_class_name($paths->{class}, $fileClass);
+	
+	print Dumper($data->{examples});
 
-	$paths->{outfile_exmpls_json} = {
+	$paths->{outfile_exampels_json} = {
 		path =>  catfile(
 			$config->{git_root_dir},
 			$paths->{schema_repo},                      
 			$config->{out_dirnames}->{examples},
 			$paths->{class}.'-examples.json'
 		),
-		content => JSON::XS->new->pretty( 1 )->canonical()->encode( $data->{examples} ),
+		content => {},
 	};
 	$paths->{outfile_plain_md} = {
 		path =>  catfile(
@@ -490,16 +500,13 @@ END
 $description
 
 END
-
 		my $propEx = _format_property_examples($p);
 		if (@$propEx > 0) {
 			$md .=  "##### `$property` Value "._pluralize("Example", $propEx)."  \n\n";
 			foreach (@$propEx) {
 				$md .= "```\n".$_."```\n";
 			}
-		}
-		
-		
+		}	
 	}
 
 	return $md;
@@ -709,6 +716,12 @@ sub _format_property_examples {
 	my $prop_data = shift;
 	my $ex_md = [];	
 	$prop_data = _remap_allof($prop_data);
+	
+	if (! defined $prop_data->{examples}) {
+		$prop_data->{examples} = [] }
+	
+	if ($prop_data->{'example'}) {
+		push(@{ $prop_data->{'examples'} }, $data->{'prop_data'}) }
 
 	foreach my $example (@{ $prop_data->{'examples'} }) {
 		if (grep { $prop_data->{type} =~ /$_/ } qw(num int) ) {
