@@ -34,9 +34,9 @@ bundle exec jekyll serve
 
 Briefly, single schemas extracted from the Beacon v2 code base are deparsed into [JSON](./generated/json/), [examples](./generated/examples/) and [Markdown](./generated/doc/) documentation. Also, web pages are generated in the corresponding web project utilizing the Jekyll / GitHub Pages system - this is done by potentially processing projects. Please see / edit the configuration filea at
 
-* [sbOpenAPIparser/config.yaml](./sbOpenAPIparser/config.yaml)
+* [config/sbOpenAPIparser.yaml](./config/sbOpenAPIparser.yaml)
   - e.g. source file definition and header configuration
-* [sbSchemaParser/config.yaml](./sbSchemaParser/config.yaml)
+* [config/sbSchemaParser.yaml](./config/sbSchemaParser.yaml)
   - e.g. processing/target directories
 
 Optional: With a working Jekyll / Github pages environment the pages can now be checked on a locally served version of the site:
