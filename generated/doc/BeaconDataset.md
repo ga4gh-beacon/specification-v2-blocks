@@ -63,6 +63,11 @@ __Description:__ A dataset available in the beacon.
 Assembly identifier (GRC notation, e.g. `GRCh37`).
 
 
+##### `assemblyId` Value Example  
+
+```
+"GRCh38"
+```
 
 #### callCount
 
@@ -79,6 +84,11 @@ Total number of calls in the dataset.
 The time the dataset was created (ISO 8601 format).
 
 
+##### `createDateTime` Value Example  
+
+```
+"2012-07-29 or 2017-01-17T20:33:40Z"
+```
 
 #### dataUseConditions
 
@@ -101,6 +111,11 @@ Description of the dataset.
 
 URL to an external system providing more dataset information (RFC 3986 format).
 
+##### `externalUrl` Value Example  
+
+```
+"http://example.org/wiki/Main_Page"
+```
 
 #### id
 
@@ -117,6 +132,17 @@ Unique identifier of the dataset.
 Additional unspecified metadata about the dataset.
 
 
+##### `info` Value Example  
+
+```
+{
+   "additionalInfoKey1" : [
+      "additionalInfoValue1",
+      "additionalInfoValue2]"
+   ],
+   "additionalInfoKey2" : "additionalInfoValue3"
+}
+```
 
 #### name
 
@@ -141,6 +167,11 @@ Total number of samples in the dataset.
 The time the dataset was updated in (ISO 8601 format).
 
 
+##### `updateDateTime` Value Example  
+
+```
+"2012-07-19 or 2017-01-17T20:33:40Z"
+```
 
 #### variantCount
 

@@ -28,14 +28,10 @@ podmd"""
 def _get_args():
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("-o", "--outdir", help="path to the output directory")
-    parser.add_argument("-f", "--schemafile", help="OpenAPI schema file to be ripped apart")
-    parser.add_argument("-m", "--headerfile", help="SchemaBlocks format metadata header")
-    parser.add_argument("-p", "--project", help="Project id")
-
+    parser.add_argument("-c", "--config", help="path to the sbOpenAPIparser.yaml configuration file")
     args = parser.parse_args()
 
-    return(args)
+    return args
 
 ################################################################################
 
@@ -48,7 +44,8 @@ def main():
     schema.
 
     This schema is updated with metadata, either from a provided SchemaBlocks
-    header file or with a default from `config.yaml`.
+    header file or with a default from a configuration file (e.g.
+    `sbOpenAPIparser.yaml`).
 
     Some of the parameter values are adjusted (which probably will have to be
     expanded for different use cases); e.g. the internal reference paths
@@ -57,21 +54,23 @@ def main():
 
     end_podmd"""
 
+    cff = _get_config_path(dir_path, _get_args())
+
     yaml = YAML()
     yaml.indent(mapping=2, sequence=4, offset=2)
 
-    with open( path.join( path.abspath( dir_path ), "config.yaml" ) ) as cf:
-        config = yaml.load( cf )
+    try:
+        with open( cff ) as cf:
+            config = yaml.load( cf )
+    except Exception as e:
+        print("Error loading the config file ({}): {}".format(cff, e) )
+        exit()
 
-    args = _get_args()
-    _check_args(config, args)
+    config.update( { "config_base_path": path.dirname(cff) } )
+    _check_config(config)
 
     with open( config[ "schemafile" ] ) as f:
         oas = yaml.load( f )
-
-    if path.isfile( config[ "headerfile" ] ):
-        with open( config[ "headerfile" ] ) as f:
-            config.update( { "header": yaml.load( f ) } )
 
     _config_add_project_specs(config, oas)
 
@@ -94,31 +93,48 @@ def main():
 
 ################################################################################
 
-def _check_args(config, args):
+def _get_config_path(dir_path, args):
 
-    if config[ "outdir" ]:
-        config.update({ "outdir": path.join( path.abspath( dir_path ), path.abspath( dir_path ), config[ "outdir" ]) } )
-    if config[ "schemafile" ]:
-        config.update({ "schemafile": path.join( path.abspath( dir_path ), path.abspath( dir_path ), config[ "schemafile" ]) } )
+    cfp = path.join( path.abspath( dir_path ), "sbOpenAPIparser.yaml")
+    if vars(args)["config"]:
+        cfp = path.abspath( vars(args)["config"] )
 
-    for a in vars(args).keys():
-        if vars(args)[a]:
-            config.update({ a: vars(args)[a] })
-
-    if not config[ "project" ]:
-        print("No project name has been provided; please use `-p` to specify")
+    if not path.isfile( cfp ):
+        print("""
+The configuration file:
+    {}
+...does not exist; please use a correct "-c" parameter".
+""".format(cfp))
         sys.exit( )
+       
+    return cfp
+
+################################################################################
+
+def _check_config(config):
+
+    for p in ["schemafile", "outdir", "project"]:
+        if not p in config:
+            print('No {} parameter has been provided the configuration file => exiting.'.format(p))
+            sys.exit( )
+
+    config.update({ "outdir": path.join( config[ "config_base_path" ], config[ "outdir" ]) } )
+    config.update({ "schemafile": path.join( config[ "config_base_path" ], config[ "schemafile" ]) } )
 
     if not path.isdir( config[ "outdir" ] ):
         print("""
 The output directory:
     {}
-...does not exist; please use `-o` to specify
+...does not exist; please use a correct relative path in the configuration file.
 """.format(config[ "outdir" ]))
         sys.exit( )
 
     if not path.isfile( config[ "schemafile" ] ):
-        print("No inputfile has ben given; please use `-f` to specify")
+        print("""
+The input file:
+    {}
+...does not exist; please use a correct relative path in the configuration file.
+""".format(config[ "outdir" ]))
         sys.exit( )
 
     return config
@@ -131,7 +147,7 @@ def _config_add_project_specs(config, oas):
 
     if "info" in oas:
         if "version" in oas[ "info" ]:
-            config["header"].update( { "$id" : re.sub( r"__version__", oas["info"][ "version" ], config["header"]["$id" ]) } )
+            config["header"].update( { "$id" : re.sub( r"__schemaversion__", oas["info"][ "version" ], config["header"]["$id" ]) } )
             config["header"].insert(h_k_n, "version", oas["info"][ "version" ])
 
     return config

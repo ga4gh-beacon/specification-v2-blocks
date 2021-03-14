@@ -89,6 +89,13 @@ Unique identifier of the organization.
 Additional unspecified metadata about the host Organization.
 
 
+##### `info` Value Example  
+
+```
+{
+   "additionalInfoKey" : "additionalInfoValue"
+}
+```
 
 #### logoUrl
 

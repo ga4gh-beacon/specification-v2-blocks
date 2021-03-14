@@ -1,12 +1,11 @@
 version: 2021-03-12
 project: 'beacon-v2'
-# if predefined paths -> relative to script!
 outdir: '../schemas'
 schemafile: '../../specification-v2/beacon.yaml'
 headerfile: false
 header:
   "$schema": http://json-schema.org/draft-07/schema#
-  "$id": https://schemablocks.org/schemas/__project__/__schema__/__version__
+  "$id": https://schemablocks.org/schemas/__project__/__schema__/__schemaversion__
   meta:
     contributors:
       - label: "ELIXIR Beacon project team"

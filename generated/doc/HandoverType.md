@@ -52,6 +52,11 @@ __Description:__ Handover type, as an Ontology_term object with CURIE syntax for
 
 Use `CUSTOM` for the `id` when no ontology is available.
 
+##### `id` Value Example  
+
+```
+"EFO:0004157"
+```
 
 #### label
 
@@ -59,4 +64,9 @@ Use `CUSTOM` for the `id` when no ontology is available.
 
 This would be the "preferred Label" in the case of an ontology term.
 
+##### `label` Value Example  
+
+```
+"BAM format"
+```
 

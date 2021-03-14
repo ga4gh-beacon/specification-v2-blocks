@@ -59,6 +59,11 @@ __Description:__ Format of the responses and version of the Beacon handling this
 
 
 
+##### `Analysis` Value Example  
+
+```
+"beacon-analysis-draft-2"
+```
 
 #### Biosample
 
@@ -66,6 +71,11 @@ __Description:__ Format of the responses and version of the Beacon handling this
 
 
 
+##### `Biosample` Value Example  
+
+```
+"ga4gh-schemablocks-biosample-v0.1"
+```
 
 #### Cohort
 
@@ -73,6 +83,11 @@ __Description:__ Format of the responses and version of the Beacon handling this
 
 
 
+##### `Cohort` Value Example  
+
+```
+"beacon-cohort-draft-3"
+```
 
 #### Individual
 
@@ -80,6 +95,11 @@ __Description:__ Format of the responses and version of the Beacon handling this
 
 
 
+##### `Individual` Value Example  
+
+```
+"ga4gh-phenopacket-individual-v0.1"
+```
 
 #### Interactor
 
@@ -87,6 +107,11 @@ __Description:__ Format of the responses and version of the Beacon handling this
 
 
 
+##### `Interactor` Value Example  
+
+```
+"beacon-interactor-draft-2"
+```
 
 #### Run
 
@@ -94,6 +119,11 @@ __Description:__ Format of the responses and version of the Beacon handling this
 
 
 
+##### `Run` Value Example  
+
+```
+"beacon-run-draft-3"
+```
 
 #### VariantAnnotation
 
@@ -101,6 +131,11 @@ __Description:__ Format of the responses and version of the Beacon handling this
 
 
 
+##### `VariantAnnotation` Value Example  
+
+```
+"beacon-variant-annotation-draft-2"
+```
 
 #### VariantIdentification
 
@@ -108,6 +143,11 @@ __Description:__ Format of the responses and version of the Beacon handling this
 
 
 
+##### `VariantIdentification` Value Example  
+
+```
+"ga4gh-variant-representation-v0.1"
+```
 
 #### VariantInSample
 
@@ -115,6 +155,11 @@ __Description:__ Format of the responses and version of the Beacon handling this
 
 
 
+##### `VariantInSample` Value Example  
+
+```
+"beacon-variant-in-sample-draft-3"
+```
 
 #### VariantInterpretation
 
@@ -122,4 +167,9 @@ __Description:__ Format of the responses and version of the Beacon handling this
 
 
 
+##### `VariantInterpretation` Value Example  
+
+```
+"beacon-variant-interpretation-draft-2"
+```
 

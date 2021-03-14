@@ -13,17 +13,21 @@ $YAML::XS::QuoteNumericStrings = 0;
 binmode STDOUT, ":utf8";
 my @here_path = splitdir(abs_path($0));
 pop @here_path;
-my $here_path = catdir(@here_path);
-my $config = LoadFile(catfile($here_path, 'config.yaml')) or die "¡No config.yaml file in this path!";
-bless $config;
-
-$config->{here_path} = $here_path;
-$config->{git_root_dir} = realpath($here_path.'/../..');
-my $podmd = catfile($config->{git_root_dir}, $config->{podmd});
+my $dir_path = catdir(@here_path);
 
 # command line input
 my %args = @ARGV;
 $args{-filter} ||= undef;
+
+my $cff = _get_config_path($dir_path, \%args);
+
+my $config = LoadFile($cff);
+bless $config;
+
+$config->{dir_path} = $dir_path;
+$config->{git_root_dir} = realpath($dir_path.'/../..');
+my $podmd = catfile($config->{git_root_dir}, $config->{podmd});
+
 foreach (keys %args) { $config->{args}->{$_} = $args{$_} }
 
 $config->_process_src();
@@ -34,6 +38,33 @@ exit;
 ################################################################################
 # subs
 ################################################################################
+################################################################################
+
+sub  _get_config_path{
+
+	my $dir_path = shift;
+	my $args = shift;
+
+    my $cfp = catfile($dir_path, "sbOpenAPIparser.yaml");
+    
+    if (defined $args->{-c}) {
+        $cfp = $args->{-c} }
+
+    if (! -f $cfp ) {
+        print <<END;
+
+The configuration file:
+    $cfp
+...does not exist; please use a correct "-c" parameter".
+
+END
+        exit;
+    }
+       
+    return $cfp;
+    
+}
+
 ################################################################################
 
 sub _process_src {
@@ -241,6 +272,8 @@ END
 		$data->{examples} = [] }
 		
 	if ($data->{'example'}) {
+		if (! defined $data->{examples}) {
+			$data->{examples} = [] }
 		push(@{ $data->{'examples'} }, $data->{'example'}) }
 
 	if (@{ $data->{'examples'} } > 0) {
@@ -324,10 +357,11 @@ The class "$id" values are assumed to have a specific structure, where
 	my $fileClass = $paths->{schema_file};
 	$fileClass =~ s/\.\w+?$//;
 
-	_check_class_name($paths->{class}, $fileClass);
+	if (! _check_class_name($paths->{class}, $fileClass)) {
+		print "\n¡¡¡ Skipping $fileClass !!!\n\n";
+		return;
+	}
 	
-	print Dumper($data->{examples});
-
 	$paths->{outfile_exampels_json} = {
 		path =>  catfile(
 			$config->{git_root_dir},
@@ -447,8 +481,9 @@ and class name from "\$id" parameter
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 END
-
+	return \0;
   }
+  return $fileClass;
 }
 
 ################################################################################
@@ -717,11 +752,10 @@ sub _format_property_examples {
 	my $ex_md = [];	
 	$prop_data = _remap_allof($prop_data);
 	
-	if (! defined $prop_data->{examples}) {
-		$prop_data->{examples} = [] }
-	
 	if ($prop_data->{'example'}) {
-		push(@{ $prop_data->{'examples'} }, $data->{'prop_data'}) }
+		if (! defined $prop_data->{examples}) {
+			$prop_data->{examples} = [] }
+		push(@{ $prop_data->{'examples'} }, $prop_data->{'example'}) }
 
 	foreach my $example (@{ $prop_data->{'examples'} }) {
 		if (grep { $prop_data->{type} =~ /$_/ } qw(num int) ) {

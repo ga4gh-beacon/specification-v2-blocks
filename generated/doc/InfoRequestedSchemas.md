@@ -51,6 +51,11 @@ __Description:__ Format of the response.
 
 
 
+##### `Dataset` Value Example  
+
+```
+"beacon-dataset-v2.0.0-draft.3"
+```
 
 #### Info
 
@@ -58,4 +63,9 @@ __Description:__ Format of the response.
 
 
 
+##### `Info` Value Example  
+
+```
+"beacon-info-v2.0.0-draft.3"
+```
 
