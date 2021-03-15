@@ -2,13 +2,9 @@
 github_organisation: ga4gh-beacon
 site_domain_name: beacon-project.io
 url: 'https://beacon-project.io'
-tags:
-  - code
-  - specification
-  - schemas
-categories:
-  - schemas
-  - howto
+organization_root_path_comps:
+  - ..
+  - ..
 status_levels:
   - playground
   - community
@@ -16,28 +12,33 @@ status_levels:
   - implemented
   - core
 schema_repos:
-  - project_dir: specification-v2-blocks
+  - schema_repo: specification-v2-blocks
     tags:
       - v2
       - beacon
-    schema_dirs:
       - schemas
+    categories:
+      - specification
+    schema_dir_name: schemas
+    out_dir_name: generated
     target_doc_dirname: beacon-v2
 #    include_matches: [ ]
 #    exclude_matches: [ ]
 #    meta_header_filename: ""
 out_dirnames:
-  json: generated/json
-  markdown: generated/doc
-  examples: generated/examples
+  json: json
+  markdown: doc
+  examples: examples
 webdocs:
   repo: 'ga4gh-beacon.github.io'
-  jekylldir: 'pages/_schemas'
+  jekyll_path_comps:
+    - pages
+    - _schemas
   schemadir: 'schemas'
   web_schemas_rel: "/schemas"
   web_html_rel: "/schemas"
 generator_prefix: '+generated__'
-schema_disclaimer: |
+schema_disclaimer: >
   <div id="schema-footer">
   This schema representation is for information purposes. The authorative 
   version remains with the developing project (see "provenance").

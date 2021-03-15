@@ -2,6 +2,7 @@
 
 use Cwd qw(abs_path realpath);
 use File::Path qw(make_path);
+use File::Basename;
 use File::Spec::Functions qw(catdir catfile splitdir);
 use JSON::XS;
 use YAML::XS qw(LoadFile DumpFile);
@@ -13,22 +14,22 @@ $YAML::XS::QuoteNumericStrings = 0;
 binmode STDOUT, ":utf8";
 my @here_path = splitdir(abs_path($0));
 pop @here_path;
-my $dir_path = catdir(@here_path);
 
 # command line input
 my %args = @ARGV;
 $args{-filter} ||= undef;
 
-my $cff = _get_config_path($dir_path, \%args);
+my $cff = _get_config_path(catdir(@here_path), \%args);
 
 my $config = LoadFile($cff);
 bless $config;
 
-$config->{dir_path} = $dir_path;
-$config->{git_root_dir} = realpath($dir_path.'/../..');
-my $podmd = catfile($config->{git_root_dir}, $config->{podmd});
-
 foreach (keys %args) { $config->{args}->{$_} = $args{$_} }
+
+my($filename, $dirs, $suffix) = fileparse($cff);
+
+$config->{dir_path} = $dirs;
+$config->{git_root_dir} = realpath(catdir($config->{dir_path}, @{$config->{organization_root_path_comps}}));
 
 $config->_process_src();
   
@@ -70,63 +71,79 @@ END
 sub _process_src {
 
 	my $config = shift;
+	
+	my $web_schema_path = catdir(
+		$config->{git_root_dir},
+		$config->{webdocs}->{repo},
+		$config->{webdocs}->{schemadir}
+	);
+
+	my $web_jekyll_path = catdir(
+		$config->{git_root_dir},
+		$config->{webdocs}->{repo},
+		@{ $config->{webdocs}->{jekyll_path_comps} }
+	);
 
 	foreach my $src_repo (@{ $config->{schema_repos} }) {
 	
-		foreach my $src_dir (@{ $src_repo->{schema_dirs} }) {
-			my $src_path = catdir(
-				$config->{git_root_dir},
-				$src_repo->{project_dir},
-				$src_dir
-			);
+		my $repo_path = catdir( $config->{git_root_dir}, $src_repo->{schema_repo} );
+		my $src_path = catdir( $repo_path, $src_repo->{schema_dir_name} );
+		my $out_path = catdir( $repo_path, $src_repo->{out_dir_name} );
+				
+		if (defined $config->{args}->{-filter}) {
+			print "=> Filtering for $config->{args}->{-filter}\n" }
+		
+		# the name of the schema dir is extracted from the $id path, unless it has
+		# been specified in the config, as `target_doc_dirname`.
+		my $target_doc_dirname = "";			
+		if ( defined $src_repo->{target_doc_dirname} ) {
+			$target_doc_dirname = $src_repo->{target_doc_dirname} }
+			
+		opendir DIR, $src_path;
+		foreach my $schema (grep{ /ya?ml$/ } readdir(DIR)) {
+
+			my $paths = {
+				schema_repo_path => $repo_path,
+				schema_dir_path => $src_path,
+				schema_out_path => $out_path,
+				schema_file_name => $schema,
+				schema_file_path => catfile($src_path, $schema),
+				schema_dir_name => $src_repo->{schema_dir_name},
+				schema_repo => $src_repo->{schema_repo},
+				doc_dirname => $target_doc_dirname,
+				web_schema_repo_path => $web_schema_path,
+				web_jekyll_path => $web_jekyll_path,
+			};
+			
+			if ( defined $src_repo->{meta_header_filename} ) {
+				$paths->{meta_header_filename} = $src_repo->{meta_header_filename} }
+			
+			if ( defined $src_repo->{tags} ) {
+				$paths->{schema_tags} = $src_repo->{tags} }
+
+			if ( defined $src_repo->{categories} ) {
+				$paths->{schema_categories} = $src_repo->{categories} }
 			
 			if (defined $config->{args}->{-filter}) {
-				print "=> Filtering for $config->{args}->{-filter}\n" }
-			
-			# the name of the schema dir is extracted from the $id path, unless it has
-			# been specified in the config, as `target_doc_dirname`.
-			my $target_doc_dirname = "";			
-			if ( defined $src_repo->{target_doc_dirname} ) {
-				$target_doc_dirname = $src_repo->{target_doc_dirname} }
-				
-			opendir DIR, $src_path;
-			foreach my $schema (grep{ /ya?ml$/ } readdir(DIR)) {
+				if ($schema !~ /$config->{args}->{-filter}/) {
+					next } }
+					
+			if (defined $src_repo->{include_matches}) {
+				print "=> Filtering for include_matches\n";
+				if (! grep{ $schema =~ /$_/ } @{ $src_repo->{include_matches} }) {
+					next } }
+					
+			if (defined $src_repo->{exclude_matches}) {
+				print "=> Filtering for exclude_matches\n";
+				if (grep{ $schema =~ /$_/ } @{ $src_repo->{exclude_matches} }) {
+					next } }						
 
-				my $paths = {
-					schema_file => $schema,
-					schema_path => catfile($src_path, $schema),
-					schema_dir_path => $src_path,
-					schema_dir => $src_dir,
-					schema_repo => $src_repo->{project_dir},
-					doc_dirname => $target_doc_dirname
-				};
-				
-				if ( defined $src_repo->{meta_header_filename} ) {
-					$paths->{meta_header_filename} = $src_repo->{meta_header_filename} }
-				
-				if ( defined $src_repo->{tags} ) {
-					$paths->{schema_tags} = $src_repo->{tags} }
-				
-				if (defined $config->{args}->{-filter}) {
-					if ($schema !~ /$config->{args}->{-filter}/) {
-						next } }
-						
-				if (defined $src_repo->{include_matches}) {
-					print "=> Filtering for include_matches\n";
-					if (! grep{ $schema =~ /$_/ } @{ $src_repo->{include_matches} }) {
-						next } }
-						
-				if (defined $src_repo->{exclude_matches}) {
-					print "=> Filtering for exclude_matches\n";
-					if (grep{ $schema =~ /$_/ } @{ $src_repo->{exclude_matches} }) {
-						next } }						
+			$config->_process_yaml($paths);
 
-				$config->_process_yaml($paths);
+		}
+		close DIR;
 
-			}
-			close DIR;
-
-}}}
+}}
 
 ################################################################################
 # main file specific process
@@ -139,9 +156,9 @@ sub _process_yaml {
 
 	bless $paths;
 	
-	print "Reading YAML file \"$paths->{schema_path}\"\n";
+	print "Reading YAML file \"$paths->{schema_file_path}\"\n";
 
-	my $data = LoadFile($paths->{schema_path});
+	my $data = LoadFile($paths->{schema_file_path});
 	
 =podmd
 If a `meta_header_filename` is provided for this schema, its `meta` root parameter
@@ -177,10 +194,10 @@ does not match.
 	$paths->_create_file_paths($config, $data);
 
 	if ($data->{title} !~ /^\w[\w\.\-]+?$/) {
-		push(@errors, '¡¡¡ No correct "title" value in schema '.$paths->{$schema_file}.'!') }
+		push(@errors, '¡¡¡ No correct "title" value in schema '.$paths->{schema_file_name}.'!') }
 
 	if (! grep{ /^$data->{meta}->{sb_status}$/ } @{ $config->{status_levels} }) {
-		push(@errors, '¡¡¡ No correct "sb_status" value in '.$paths->{$schema_file}.' => skipping !!!') }
+		push(@errors, '¡¡¡ No correct "sb_status" value in '.$paths->{schema_file_name}.' => skipping !!!') }
 		
 	if (@errors > 0) {
 		print "\n".join("\n", @errors)."\n";
@@ -293,8 +310,7 @@ END
 
 =cut
 
-	$paths->{outfile_exampels_json}->{content} = JSON::XS->new->pretty( 1 )->canonical()->encode( $data->{examples} );
-	
+	$paths->{outfile_examples_json}->{content} = JSON::XS->new->pretty( 1 )->canonical()->encode( $data->{examples} );
 	$paths->{outfile_plain_md}->{content} = $output->{md};
 	$paths->{outfile_jekyll_current_md}->{content} = $output->{jekyll_head}.$output->{md}.$config->{schema_disclaimer}."\n";
 
@@ -354,7 +370,7 @@ The class "$id" values are assumed to have a specific structure, where
 	if (! $data->{examples}) {
 		$data->{examples} = [] }
 
-	my $fileClass = $paths->{schema_file};
+	my $fileClass = $paths->{schema_file_name};
 	$fileClass =~ s/\.\w+?$//;
 
 	if (! _check_class_name($paths->{class}, $fileClass)) {
@@ -362,10 +378,9 @@ The class "$id" values are assumed to have a specific structure, where
 		return;
 	}
 	
-	$paths->{outfile_exampels_json} = {
+	$paths->{outfile_examples_json} = {
 		path =>  catfile(
-			$config->{git_root_dir},
-			$paths->{schema_repo},                      
+			$paths->{schema_out_path},                      
 			$config->{out_dirnames}->{examples},
 			$paths->{class}.'-examples.json'
 		),
@@ -373,8 +388,7 @@ The class "$id" values are assumed to have a specific structure, where
 	};
 	$paths->{outfile_plain_md} = {
 		path =>  catfile(
-			$config->{git_root_dir},
-			$paths->{schema_repo},
+			$paths->{schema_out_path},,
 			$config->{out_dirnames}->{markdown},
 			$paths->{class}.'.md'
 		),
@@ -382,8 +396,7 @@ The class "$id" values are assumed to have a specific structure, where
 	};
 	$paths->{outfile_src_json_current} = {
 		path =>  catfile(
-			$config->{git_root_dir},
-			$paths->{schema_repo},
+			$paths->{schema_out_path},
 			$config->{out_dirnames}->{json},
 			'current',
 			$paths->{class}.'.json'
@@ -392,8 +405,7 @@ The class "$id" values are assumed to have a specific structure, where
 	};
 	$paths->{outfile_src_json_versioned} = {
 		path =>  catfile(
-			$config->{git_root_dir},
-			$paths->{schema_repo},
+			$paths->{schema_out_path},
 			$config->{out_dirnames}->{json},
 			$paths->{version},
 			$paths->{class}.'.json'
@@ -402,9 +414,7 @@ The class "$id" values are assumed to have a specific structure, where
 	};
 	$paths->{outfile_web_src_json_current} = {
 		path =>  catfile(
-		$config->{git_root_dir},
-		$config->{webdocs}->{repo},
-		$config->{webdocs}->{schemadir},
+		$paths->{web_schema_repo_path},
 		$doc_dirname,
 		'current',
 		$paths->{class}.'.json'
@@ -413,9 +423,7 @@ The class "$id" values are assumed to have a specific structure, where
 	};
 	$paths->{outfile_web_src_json_versioned} = {
 		path =>  catfile(
-			$config->{git_root_dir},
-			$config->{webdocs}->{repo},
-			$config->{webdocs}->{schemadir},
+			$paths->{web_schema_repo_path},
 			$doc_dirname,
 			$paths->{version},
 			$paths->{class}.'.json'
@@ -424,9 +432,7 @@ The class "$id" values are assumed to have a specific structure, where
 	};
 	$paths->{outfile_jekyll_current_md} = {
 		path => catfile(
-		$config->{git_root_dir},
-		$config->{webdocs}->{repo},
-		$config->{webdocs}->{jekylldir},
+		$paths->{web_jekyll_path},
 		$doc_dirname,
 		$config->{generator_prefix}.$paths->{class}.'.md'
 		),
@@ -443,8 +449,8 @@ The class "$id" values are assumed to have a specific structure, where
 		$paths->{schema_repo},
 		'blob',
 		'master',
-		$paths->{schema_dir},
-		$paths->{schema_file}
+		$paths->{schema_dir_name},
+		$paths->{schema_file_name}
 	);
 	$paths->{web_link_json} = join('/',
 		$config->{webdocs}->{web_schemas_rel},
@@ -573,7 +579,18 @@ the page.
 	my $paths = shift;
 	my $data = shift;
 	
-	my %tags = ( $paths->{project} > 1 );
+	my %categories = ( );
+	if (defined $config->{categories}) {
+		foreach (grep { /\w/ } @{$config->{categories}}) {
+			$categories{$_} = 1;
+		}
+	}
+	if (defined $paths->{schema_categories}) {
+		foreach (grep { /\w/ } @{$paths->{schema_categories}}) {
+			$categories{$_} = 1;
+		}
+	}
+	my %tags = ( $paths->{project} => 1 );
 	if (defined $config->{tags}) {
 		foreach (grep { /\w/ } @{$config->{tags}}) {
 			$tags{$_} = 1;
@@ -594,10 +611,12 @@ layout: default
 permalink: "$paths->{doc_link_html}"
 sb_status: "$data->{meta}->{sb_status}"
 excerpt_separator: $config->{jekyll_excerpt_separator}
-category:
-  - schemas
-tags:
+categories:
 END
+	foreach (grep{ /\w/ } sort keys %categories) {
+		$j_h .= "  - $_\n";
+	}
+	$j_h .= "tags:\n";
 	foreach (grep{ /\w/ } sort keys %tags) {
 		$j_h .= "  - $_\n";
 	}
