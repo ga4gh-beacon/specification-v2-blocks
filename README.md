@@ -22,13 +22,19 @@ directories, in the same parent directory:
 * `ga4gh-beacon.github.io`
   - the Beacon project website repository, i.e. a Github Pages source repository
 
-From *this directory*, a complete process to convert & show the schema
+#### Schema parsing with [schemablock-tools](../schemablock-tools/)
+
+The [schemablock-tools](../schemablocks-tools/) repository represents a fork from
+the tools developed for the [GA4GH SchemaBlocks](http://schemablocks.org)
+project.
+
+From *the current directory*, a complete process to convert & show the schema
 information consists of basically 3 commands:
 
 ```
-python3 ./tools/sbOpenAPIparser.py -c ./config/sbOpenAPIparser.yaml
-perl ./tools/sbSchemaParser.pl -c ./config/sbSchemaParser.yaml
-cd ga4gh-beacon.github.io
+python3 ../schemablocks-tools/sbOpenAPIparser.py -c ./config/sbOpenAPIparser.yaml
+perl ../schemablocks-tools/sbSchemaParser.pl -c ./config/sbSchemaParser.yaml
+cd ../ga4gh-beacon.github.io
 bundle exec jekyll serve
 ```
 
