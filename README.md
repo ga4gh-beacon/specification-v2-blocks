@@ -32,7 +32,12 @@ cd ga4gh-beacon.github.io
 bundle exec jekyll serve
 ```
 
-Briefly, single schemas extracted from the Beacon v2 code base are deparsed into [JSON](./generated/json/), [examples](./generated/examples/) and [Markdown](./generated/doc/) documentation. Also, web pages are generated in the corresponding web project utilizing the Jekyll / GitHub Pages system - this is done by potentially processing projects. Please see / edit the configuration filea at
+Briefly, single schemas extracted from the Beacon v2 code base are deparsed into [JSON](./generated/json/), [examples](./generated/examples/) and [Markdown](./generated/doc/) documentation. Also, web pages are generated in the corresponding web project utilizing the Jekyll / GitHub Pages system - this is done by potentially processing projects. More documentation can be found at
+
+* [tools/sbOpenAPIparser.md](./tools/sbOpenAPIparser.md)
+* [tools/sbSchemaParser.md](./tools/sbSchemaParser.md)
+
+Please see / edit the configuration filea at
 
 * [config/sbOpenAPIparser.yaml](./config/sbOpenAPIparser.yaml)
   - e.g. source file definition and header configuration
