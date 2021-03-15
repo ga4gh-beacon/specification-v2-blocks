@@ -1,3 +1,4 @@
+---
 version: 2021-03-12
 project: 'beacon-v2'
 outdir: '../schemas'

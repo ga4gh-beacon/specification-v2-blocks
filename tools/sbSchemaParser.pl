@@ -190,19 +190,24 @@ does not match.
 =cut
 
 	my @errors = ();
+	my @warnings = ();
 
 	$paths->_create_file_paths($config, $data);
 
 	if ($data->{title} !~ /^\w[\w\.\-]+?$/) {
 		push(@errors, '¡¡¡ No correct "title" value in schema '.$paths->{schema_file_name}.'!') }
 
-	if (! grep{ /^$data->{meta}->{sb_status}$/ } @{ $config->{status_levels} }) {
-		push(@errors, '¡¡¡ No correct "sb_status" value in '.$paths->{schema_file_name}.' => skipping !!!') }
+	if (defined $config->{status_levels}) {
+		if (! grep{ /^$data->{meta}->{sb_status}$/ } @{ $config->{status_levels} }) {
+			push(@warnings, '¡¡¡ No correct "sb_status" value in '.$paths->{schema_file_name}.' !!!') }
+	}
 		
 	if (@errors > 0) {
 		print "\n".join("\n", @errors)."\n";
 		return;
 	}
+	if (@warnings > 0) {
+		print "\n".join("\n", @warnings)."\n" }
 
 =podmd
 
