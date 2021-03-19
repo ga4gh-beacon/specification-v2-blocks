@@ -22,9 +22,9 @@ directories, in the same parent directory:
 * `ga4gh-beacon.github.io`
   - the Beacon project website repository, i.e. a Github Pages source repository
 
-#### Schema parsing with [schemablock-tools](../schemablock-tools/)
+#### Schema parsing with [schemablock-tools](https://github.com/ga4gh-beacon/schemablocks-tools)
 
-The [schemablock-tools](../schemablocks-tools/) repository represents a fork from
+The [schemablock-tools](https://github.com/ga4gh-beacon/schemablocks-tools) repository represents a fork from
 the tools developed for the [GA4GH SchemaBlocks](http://schemablocks.org)
 project.
 
@@ -40,8 +40,8 @@ bundle exec jekyll serve
 
 Briefly, single schemas extracted from the Beacon v2 code base are deparsed into [JSON](./generated/json/), [examples](./generated/examples/) and [Markdown](./generated/doc/) documentation. Also, web pages are generated in the corresponding web project utilizing the Jekyll / GitHub Pages system - this is done by potentially processing projects. More documentation can be found at
 
-* [tools/sbOpenAPIparser.md](./tools/sbOpenAPIparser.md)
-* [tools/sbSchemaParser.md](./tools/sbSchemaParser.md)
+* [https://github.com/ga4gh-beacon/schemablocks-tools/blob/master/sbOpenAPIparser.md](sbOpenAPIparser.md)
+* [https://github.com/ga4gh-beacon/schemablocks-tools/blob/master/sbSchemaParser.md](sbSchemaParser.md)
 
 Please see / edit the configuration filea at
 
