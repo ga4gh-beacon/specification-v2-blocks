@@ -40,8 +40,8 @@ bundle exec jekyll serve
 
 Briefly, single schemas extracted from the Beacon v2 code base are deparsed into [JSON](./generated/json/), [examples](./generated/examples/) and [Markdown](./generated/doc/) documentation. Also, web pages are generated in the corresponding web project utilizing the Jekyll / GitHub Pages system - this is done by potentially processing projects. More documentation can be found at
 
-* [https://github.com/ga4gh-beacon/schemablocks-tools/blob/master/sbOpenAPIparser.md](sbOpenAPIparser.md)
-* [https://github.com/ga4gh-beacon/schemablocks-tools/blob/master/sbSchemaParser.md](sbSchemaParser.md)
+* [sbOpenAPIparser.md](https://github.com/ga4gh-beacon/schemablocks-tools/blob/master/sbOpenAPIparser.md)
+* [sbSchemaParser.md](https://github.com/ga4gh-beacon/schemablocks-tools/blob/master/sbSchemaParser.md)
 
 Please see / edit the configuration filea at
 
