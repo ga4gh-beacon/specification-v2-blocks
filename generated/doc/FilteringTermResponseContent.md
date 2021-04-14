@@ -1,6 +1,6 @@
 
 <div id="schema-header-title">
-  <h2><span id="schema-header-title-project">beacon-v2</span> RunResponseContent <a href="https://github.com/ga4gh-beacon/specification-v2-blocks" target="_BLANK">[ &nearr; ]</a></h2>
+  <h2><span id="schema-header-title-project">beacon-v2</span> FilteringTermResponseContent <a href="https://github.com/ga4gh-beacon/specification-v2-blocks" target="_BLANK">[ &nearr; ]</a></h2>
 </div>
 
 <table id="schema-header-table">
@@ -25,8 +25,8 @@
 <li><a href="https://orcid.org/0000-0002-9903-4248">Michael Baudis</a></li>
 </ul></td></tr>
 <tr><th>Source (2.0.0-draft.3)</th><td><ul>
-<li><a href="current/RunResponseContent.json" target="_BLANK">raw source [JSON]</a></li>
-<li><a href="https://github.com/ga4gh-beacon/specification-v2-blocks/blob/master/schemas/RunResponseContent.yaml" target="_BLANK">Github</a></li>
+<li><a href="current/FilteringTermResponseContent.json" target="_BLANK">raw source [JSON]</a></li>
+<li><a href="https://github.com/ga4gh-beacon/specification-v2-blocks/blob/master/schemas/FilteringTermResponseContent.yaml" target="_BLANK">Github</a></li>
 </ul></td></tr>
 </table>
 
@@ -34,43 +34,23 @@
 
   
 __Type:__ object  
-__Description:__ TBD
+__Description:__ Filtering terms available in this Beacon.
 
 ### Properties
 
 <table id="schema-properties-table">
 <tr><th>Property</th><th>Type</th></tr>
-<tr><th>beaconHandover</th><td>array of "Handover.yaml#/ [<a href="./Handover.html">HTML</a>]"</td></tr>
 <tr><th>error</th><td>BeaconError.yaml#/ [<a href="./BeaconError.html">HTML</a>]</td></tr>
-<tr><th>exists</th><td>boolean</td></tr>
 <tr><th>info</th><td>object</td></tr>
 <tr><th>numTotalResults</th><td>integer</td></tr>
-<tr><th>results</th><td>array of "RunResponseResults.yaml#/ [<a href="./RunResponseResults.html">HTML</a>]"</td></tr>
-<tr><th>resultsHandover</th><td>array of "Handover.yaml#/ [<a href="./Handover.html">HTML</a>]"</td></tr>
+<tr><th>results</th><td>array of "FilteringTerm.yaml#/ [<a href="./FilteringTerm.html">HTML</a>]"</td></tr>
 </table>
-
-
-#### beaconHandover
-
-* type: array of "Handover.yaml#/ [<a href="./Handover.html">HTML</a>]"
-
-
 
 
 #### error
 
 * type: BeaconError.yaml#/ [<a href="./BeaconError.html">HTML</a>]
 
-
-
-
-#### exists
-
-* type: boolean
-
-Indicator of whether any run was observed in any of the
-datasets queried. This should be non-null, unless there was an
-error, in which case `error` has to be non-null.
 
 
 
@@ -90,14 +70,7 @@ error, in which case `error` has to be non-null.
 
 #### results
 
-* type: array of "RunResponseResults.yaml#/ [<a href="./RunResponseResults.html">HTML</a>]"
-
-
-
-
-#### resultsHandover
-
-* type: array of "Handover.yaml#/ [<a href="./Handover.html">HTML</a>]"
+* type: array of "FilteringTerm.yaml#/ [<a href="./FilteringTerm.html">HTML</a>]"
 
 
 

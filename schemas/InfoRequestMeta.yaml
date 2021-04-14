@@ -29,7 +29,7 @@ properties:
     $ref: InfoRequestedSchemas.yaml#/
   apiVersion:
     description: |
-      Schemas & versions default for this Beacon version will be used to 
+      Schemas & versions default for this Beacon version will be used to
       format the response.
     type: string
     example: v2.0

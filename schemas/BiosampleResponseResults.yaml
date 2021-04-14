@@ -25,5 +25,5 @@ description: |
   Default schema for describing biosamples.
 type: object
 oneOf:
-  - $ref: https://raw.githubusercontent.com/ga4gh-beacon/specification-v2-default-schemas/draft.3/default_biosample_schema.yamlBiosample.yaml#/
+  - $ref: https://raw.githubusercontent.com/ga4gh-beacon/specification-v2-default-schemas/draft.3/default_biosample_schema.yaml#/components/schemas/Biosample
   - $ref: AlternativeSchema.yaml#/

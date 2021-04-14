@@ -49,7 +49,7 @@ __Description:__ Pagination to apply on the results.
 
 * type: integer
 
-Size of the page. 
+Size of the page.
 
 Use  `0` to return all the results or the maximum allowed by the Beacon, if there is any.
 

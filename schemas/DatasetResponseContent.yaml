@@ -22,17 +22,20 @@ meta:
 version: 2.0.0-draft.3
 title: DatasetResponseContent
 description: |
-  Description pending
+  TBD
 type: object
 required:
   - results
 properties:
   error:
     $ref: BeaconError.yaml#/
+  numTotalResults:
+    type: integer
+    minimum: 0
   results:
     type: array
     items:
-      $ref: BeaconDataset.yaml#/                       #'#/components/schemas/DatasetResponseResults'
+      $ref: BeaconDataset.yaml#/
   info:
     type: object
 

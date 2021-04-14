@@ -22,7 +22,12 @@ meta:
 version: 2.0.0-draft.3
 title: InfoResponse
 description: |
-  Response of a query over Beacon info. Use `InfoResponseContent` when querying the Beacon info endpoints, and `DatasetResponseContent` when querying the datasets endpoint.
+  Response of a query over Beacon info. 
+
+  Use `InfoResponseContent` when querying the Beacon info endpoints, 
+  `DatasetResponseContent` when querying the datasets endpoint, and 
+  `FilteringTermResponseContent` when querying the filtering terms 
+  endpoint.
 type: object
 required:
   - meta
@@ -34,3 +39,4 @@ properties:
     oneOf:
       - $ref: '#/components/schemas/InfoResponseContent'
       - $ref: '#/components/schemas/DatasetResponseContent'
+      - $ref: '#/components/schemas/FilteringTermResponseContent'

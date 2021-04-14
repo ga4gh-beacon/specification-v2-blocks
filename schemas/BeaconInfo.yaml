@@ -48,7 +48,7 @@ properties:
   environment:
     type: string
     description: |
-      Environment the service is running in. Use this to distinguish 
+      Environment the service is running in. Use this to distinguish
       between production, development and testing/staging deployments.
     enum:
       - prod

@@ -57,7 +57,7 @@ __Description:__ Response containing information about an allele in a particular
 
 * type: integer (int64)
 
-Total number of calls in the dataset. Missing calls are not 
+Total number of calls in the dataset. Missing calls are not
 included.
 
 
@@ -73,7 +73,7 @@ included.
 
 * type: string
 
-not provided
+`id` of the dataset.
 
 
 
@@ -103,7 +103,7 @@ Frequency of this allele in the dataset. Between 0 and 1, inclusive.
 
 * type: object
 
-Additional unspecified metadata about the dataset response or its 
+Additional unspecified metadata about the dataset response or its
 content.
 
 
@@ -131,7 +131,7 @@ Additional note or description of the response.
 
 * type: integer (int64)
 
-Number of samples in the dataset where the requested allele is 
+Number of samples in the dataset where the requested allele is
 found.
 
 
@@ -140,7 +140,7 @@ found.
 
 * type: integer (int64)
 
-Number of times the requested allele has been observed in the 
+Number of times the requested allele has been observed in the
 dataset.
 
 

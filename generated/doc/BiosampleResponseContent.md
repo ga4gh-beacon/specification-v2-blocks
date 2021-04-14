@@ -34,7 +34,7 @@
 
   
 __Type:__ object  
-__Description:__ Description pending
+__Description:__ TBD
 
 ### Properties
 

@@ -22,7 +22,7 @@ meta:
 version: 2.0.0-draft.3
 title: AnalysisResponseContent
 description: |
-  TODO
+  TBD
 type: object
 required:
   - exists

@@ -22,7 +22,7 @@ meta:
 version: 2.0.0-draft.3
 title: InfoResponseMeta
 description: |
-  Meta information about the reponse.
+  Meta information about the response.
 type: object
 properties:
   beaconId:
@@ -38,3 +38,4 @@ properties:
     $ref: InfoRequest.yaml#/
   returnedSchemas:
     $ref: InfoRequestedSchemas.yaml#/
+

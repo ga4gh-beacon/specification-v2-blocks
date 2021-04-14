@@ -55,4 +55,3 @@ properties:
   Cohort:
     type: string
     example: beacon-cohort-draft-3
-

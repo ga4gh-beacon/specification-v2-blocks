@@ -22,7 +22,7 @@ meta:
 version: 2.0.0-draft.3
 title: VariantReponseResults
 description: |
-  Description pending
+  TBD
 properties:
   variant:
     $ref: Variant.yaml#/
@@ -36,3 +36,4 @@ properties:
     type: array
     items:
       $ref: BeaconDatasetAlleleResponse.yaml#/
+

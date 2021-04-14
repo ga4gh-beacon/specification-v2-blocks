@@ -31,3 +31,6 @@ properties:
   Dataset:
     type: string
     example: beacon-dataset-v2.0.0-draft.3
+  FilterTerm:
+    type: string
+    example: beacon-filtering-term-v2.0.0-draft.3
