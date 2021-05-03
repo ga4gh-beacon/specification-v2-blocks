@@ -42,6 +42,7 @@ __Description:__ Data use conditions ruling this dataset.
 <tr><th>Property</th><th>Type</th></tr>
 <tr><th>adamDataUse</th><td>https://raw.githubusercontent.com/ga4gh/ADA-M/v1.0.1/adam.yaml#/components/schemas/Adam [<a href="https://raw.githubusercontent.com/ga4gh/ADA-M/v1.0.1/adam.yaml">LINK</a>]</td></tr>
 <tr><th>consentCodeDataUse</th><td>https://raw.githubusercontent.com/ga4gh/ga4gh-consent-policy/v1.1.0/consent_code.yaml#/components/schemas/ConsentCodeDataUse [<a href="https://raw.githubusercontent.com/ga4gh/ga4gh-consent-policy/v1.1.0/consent_code.yaml">LINK</a>]</td></tr>
+<tr><th>duoDataUse</th><td>array of "DUODataUse.yaml#/ [<a href="./DUODataUse.html">HTML</a>]"</td></tr>
 </table>
 
 
@@ -55,6 +56,13 @@ __Description:__ Data use conditions ruling this dataset.
 #### consentCodeDataUse
 
 * type: https://raw.githubusercontent.com/ga4gh/ga4gh-consent-policy/v1.1.0/consent_code.yaml#/components/schemas/ConsentCodeDataUse [<a href="https://raw.githubusercontent.com/ga4gh/ga4gh-consent-policy/v1.1.0/consent_code.yaml">LINK</a>]
+
+
+
+
+#### duoDataUse
+
+* type: array of "DUODataUse.yaml#/ [<a href="./DUODataUse.html">HTML</a>]"
 
 
 

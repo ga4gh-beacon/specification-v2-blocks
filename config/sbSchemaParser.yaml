@@ -15,7 +15,6 @@ schema_repos:
   - schema_repo: specification-v2-blocks
     tags:
       - v2
-      - beacon
       - schemas
     categories:
       - specification

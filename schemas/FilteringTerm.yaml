@@ -37,3 +37,4 @@ properties:
       This would be the "preferred Label" in the case of an ontology term.
     type: string
     example: Pharyngeal squamous cell carcinoma
+

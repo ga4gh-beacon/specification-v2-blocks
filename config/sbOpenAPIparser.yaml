@@ -1,5 +1,5 @@
 ---
-version: 2021-04-14
+version: 2021-05-03
 project: 'beacon-v2'
 outdir: '../schemas'
 schemafile: '../../specification-v2/beacon.yaml'

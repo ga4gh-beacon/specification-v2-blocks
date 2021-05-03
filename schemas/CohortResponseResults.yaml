@@ -24,6 +24,6 @@ title: CohortResponseResults
 description: |
   Default schema for describing runs.
 type: object
-oneOf:
+anyOf:
   - $ref: https://raw.githubusercontent.com/ga4gh-beacon/specification-v2-default-schemas/draft.3/default_cohort_schema.yaml#/components/schemas/Cohort
-  - $ref: AlternativeSchema.yaml#/
+  - $ref: '#/components/schemas/AlternativeSchema'

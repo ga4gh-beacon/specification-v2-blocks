@@ -1,5 +1,5 @@
 $schema: http://json-schema.org/draft-07/schema#
-$id: https://schemablocks.org/schemas/beacon-v2/BiosampleResponseResults/2.0.0-draft.3
+$id: https://schemablocks.org/schemas/beacon-v2/OntologyTerm/2.0.0-draft.3
 meta:
   contributors:
     - label: ELIXIR Beacon project team
@@ -20,11 +20,12 @@ meta:
       id: https://github.com/progenetix/schemas/
   sb_status: community
 version: 2.0.0-draft.3
-title: BiosampleResponseResults
-description: |
-  Default schema for describing biosamples.
+title: OntologyTerm
 type: object
-anyOf:
-  - $ref: https://raw.githubusercontent.com/ga4gh-beacon/specification-v2-default-schemas/draft.3/default_biosample_schema.yaml#/components/schemas/Biosample
-  - $ref: '#/components/schemas/AlternativeSchema'
-
+required:
+  - id
+properties:
+  id:
+    type: string
+  label:
+    type: string

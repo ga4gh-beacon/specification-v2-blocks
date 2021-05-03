@@ -24,6 +24,6 @@ title: Variant
 description: |
   Variant description using either the default or an alternative schema.
 type: object
-oneOf:
+anyOf:
   - $ref: https://raw.githubusercontent.com/ga4gh-beacon/specification-v2-default-schemas/draft.3/default_variant_identification_schema.yaml#/components/schemas/VariantIdentification
-  - $ref: AlternativeSchema.yaml#/
+  - $ref: '#/components/schemas/AlternativeSchema'

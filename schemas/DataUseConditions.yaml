@@ -22,9 +22,6 @@ meta:
 version: 2.0.0-draft.3
 title: DataUseConditions
 type: object
-required:
-  - consentCodeDataUse
-  - adamDataUse
 description: |
   Data use conditions ruling this dataset.
 properties:
@@ -34,3 +31,7 @@ properties:
   adamDataUse:
     $ref: >-
       https://raw.githubusercontent.com/ga4gh/ADA-M/v1.0.1/adam.yaml#/components/schemas/Adam
+  duoDataUse:
+    type: array
+    items:
+      $ref: DUODataUse.yaml#/

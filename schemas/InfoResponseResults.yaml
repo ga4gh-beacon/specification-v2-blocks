@@ -24,6 +24,7 @@ title: InfoResponseResults
 description: |
   Default schema for describing Beacon info.
 type: object
-oneOf:
-  - $ref: BeaconInfo.yaml#/
-  - $ref: AlternativeSchema.yaml#/
+anyOf:
+  - $ref: '#/components/schemas/BeaconInfo'
+  - $ref: '#/components/schemas/AlternativeSchema'
+

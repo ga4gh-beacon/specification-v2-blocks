@@ -24,6 +24,19 @@ title: IndividualResponseResults
 description: |
   Default schema for describing invididuals.
 type: object
-oneOf:
+anyOf:
   - $ref: https://raw.githubusercontent.com/ga4gh-beacon/specification-v2-default-schemas/draft.3/default_individual_schema.yaml#/components/schemas/Individual
-  - $ref: AlternativeSchema.yaml#/
+  - $ref: '#/components/schemas/AlternativeSchema'
+
+    # BiosampleRequest:
+    #   description: |
+    #     TBD
+    #   type: object
+    #   required:
+    #     - meta
+    #     - query
+    #   properties:
+    #     meta:
+    #       $ref: '#/components/schemas/RequestMeta'
+    #     query:
+    #       $ref: '#/components/schemas/RequestQuery'
