@@ -6,23 +6,16 @@
 <table id="schema-header-table">
 <tr>
 <th>{S}[B] Status <a href="https://schemablocks.org/about/sb-status-levels.html">[i]</a></th>
-<td><div id="schema-header-status">community</div></td>
+<td><div id="schema-header-status">proposed</div></td>
 </tr>
 <tr><th>Provenance</th><td><ul>
 <li><a href="https://github.com/ga4gh-beacon/specification-v2">Beacon v2</a></li>
-</ul></td></tr>
-<tr><th>Used by</th><td><ul>
-<li><a href="https://github.com/progenetix/schemas/">Progenetix database schema (Beacon+ backend)</a></li>
 </ul></td></tr>
 
 
 <!--more-->
 <tr><th>Contributors</th><td><ul>
 <li><a href="https://beacon-project.io/categories/people.html">ELIXIR Beacon project team</a></li>
-<li><a href="https://github.com/jrambla">Jordi Rambla</a></li>
-<li><a href="https://github.com/sdelatorrep">Sabele de la Torre</a></li>
-<li><a href="https://github.com/mamanambiya">Mamana Mbiyavanga</a></li>
-<li><a href="https://orcid.org/0000-0002-9903-4248">Michael Baudis</a></li>
 </ul></td></tr>
 <tr><th>Source (2.0.0-draft.3)</th><td><ul>
 <li><a href="current/AnalysisResponse.json" target="_BLANK">raw source [JSON]</a></li>

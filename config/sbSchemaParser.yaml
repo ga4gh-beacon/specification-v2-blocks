@@ -17,7 +17,7 @@ schema_repos:
       - v2
       - schemas
     categories:
-      - specification
+      - schemas
     schema_dir_name: schemas
     out_dir_name: generated
     target_doc_dirname: beacon-v2
